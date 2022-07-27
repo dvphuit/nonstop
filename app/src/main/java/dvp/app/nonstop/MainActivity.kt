@@ -36,7 +36,8 @@ fun Greeting(name: String) {
     Text(text = "Hello $name!")
 
     LaunchedEffect(Unit){
-        val result = YtExtractor().getWatchHTMLPage()
+        val videoId = "xsPcMO9CRBE"
+        val result = YtExtractor().getBasicInfo(videoId)
         println(result)
     }
 }

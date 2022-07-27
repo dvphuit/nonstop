@@ -3,7 +3,7 @@ package dvp.lib.ytube.utils
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 
-object JsonUtils {
+internal object JsonUtils {
     private val jsonBuilder = Json {
         this.isLenient = true
         this.prettyPrint = false
@@ -31,7 +31,7 @@ object JsonUtils {
                 this.cutAfterJSON().replace(Regex("^[)\\]}'\\s]+"), "")
             )
         } catch (e: Exception) {
-            error("Error parsing $varname in ${source}: ${e.message}");
+            error("Error parsing $varname in ${source}: ${e.message}")
         }
     }
 

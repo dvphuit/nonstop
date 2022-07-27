@@ -1,21 +1,23 @@
-package dvp.lib.ytube.jsengine
+package dvp.lib.jsengine.internal
 
 import app.cash.quickjs.QuickJs
+import dvp.lib.jsengine.JsType
+import dvp.lib.jsengine.toJsType
 
-object JsEngine {
+internal class JsEngineImpl: JsEngine {
     private val engine by lazy { QuickJs.create() }
 
     @Volatile
     var isClosed = false
         private set
 
-    fun close() {
+    override fun close() {
         if (isClosed) return
         engine.close()
         isClosed = true
     }
 
-    fun evaluate(
+    override fun evaluate(
         context: Map<String, JsType>,
         script: String
     ): JsType {

@@ -1,8 +1,7 @@
-package dvp.lib.ytube
+package dvp.lib.jsengine
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import kotlinx.coroutines.runBlocking
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,14 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("dvp.lib.ytube.test", appContext.packageName)
-    }
-
-    @Test
-    fun urlTest(){
-        runBlocking {
-            val info = YtExtractor().getBasicInfo("xsPcMO9CRBE")
-            println(info)
-        }
+        assertEquals("dvp.lib.jsengine.test", appContext.packageName)
     }
 }

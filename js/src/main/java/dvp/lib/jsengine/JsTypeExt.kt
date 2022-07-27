@@ -1,4 +1,4 @@
-package dvp.lib.ytube.jsengine
+package dvp.lib.jsengine
 
 
 fun Any?.toJsType(): JsType {

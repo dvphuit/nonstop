@@ -1,4 +1,4 @@
-package dvp.lib.ytube.jsengine
+package dvp.lib.jsengine
 
 sealed class JsType {
     data class Bool(override val value: Boolean) : JsType()
