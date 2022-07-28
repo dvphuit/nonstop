@@ -5,16 +5,16 @@ import dvp.lib.jsengine.toJsType
 import dvp.lib.ytube.utils.JsonUtils.between
 import dvp.lib.ytube.utils.JsonUtils.cutAfterJSON
 import io.ktor.http.*
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.*
 
 internal object Sig {
 
-    fun decipherFormats(formats: List<JsonObject>, htmlPlayer: String): List<JsonObject> {
+    fun decipherFormats(formats: JsonArray, htmlPlayer: String): JsonArray {
         val (decipherScript, nTransformScript) = extractFunctions(htmlPlayer)
-        return formats.map {
-            setDownloadURL(it, decipherScript, nTransformScript)
+        return buildJsonArray {
+            formats.forEach {
+                this.add(setDownloadURL(it.jsonObject, decipherScript, nTransformScript))
+            }
         }
     }
 

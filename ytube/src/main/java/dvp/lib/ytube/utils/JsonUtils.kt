@@ -2,6 +2,7 @@ package dvp.lib.ytube.utils
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 
 internal object JsonUtils {
     private val jsonBuilder = Json {
@@ -88,5 +89,15 @@ internal object JsonUtils {
         if (end == -1) return ""
 
         return this.slice(IntRange(start, end - 1))
+    }
+
+    fun JsonObject.getNestedObj(vararg keys: String): JsonElement? {
+        if (keys.isEmpty()) return this
+
+        val ret = this[keys[0]]
+        if (ret is JsonObject) {
+            return ret.getNestedObj(*keys.drop(1).toTypedArray())
+        }
+        return ret
     }
 }

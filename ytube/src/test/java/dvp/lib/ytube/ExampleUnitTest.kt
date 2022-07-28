@@ -19,11 +19,12 @@ class ExampleUnitTest {
     @Test
     fun urlTest(){
         runBlocking {
+            val start = System.currentTimeMillis()
             val info = YtExtractor().run {
                 isTest = true
-                getBasicInfo("xsPcMO9CRBE")
+                getBasicInfo("aqz-KE-bpKQ")
             }
-            println(info)
+            println("extract end at ${System.currentTimeMillis() - start}ms")
         }
     }
 }
