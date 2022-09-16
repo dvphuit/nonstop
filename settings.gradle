@@ -14,5 +14,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "NonStop"
 include ':app'
-include ':ytube'
-include ':js'
+include ':modules:ytube'
+include ':modules:js'
+include ':modules:browser'
