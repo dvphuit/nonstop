@@ -12,7 +12,7 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "One"
+rootProject.name = "one"
 include(
     ":app",
     ":compose-main:youtube-ui",
