@@ -1,6 +1,6 @@
 package dvp.lib.browser.ui.widgets.toolbar
 
-import androidx.activity.compose.BackHandler
+//import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -58,7 +58,7 @@ internal fun EditToolbar(
   val focusRequester = remember { FocusRequester() }
 
   LaunchedEffect(Unit) { focusRequester.requestFocus() }
-  BackHandler(onBack = onBackPressed)
+//  BackHandler(onBack = onBackPressed)
 
   val textFieldValueState = remember {
     mutableStateOf(

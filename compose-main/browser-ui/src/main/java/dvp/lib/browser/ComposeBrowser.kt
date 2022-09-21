@@ -1,6 +1,6 @@
-package dvp.lib.browser.ui
+package dvp.lib.browser
 
-import androidx.activity.compose.BackHandler
+//import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,7 +8,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import dvp.lib.browser.Controller
+import dvp.lib.browser.ui.MainViewModel
 import dvp.lib.browser.ui.widgets.ComposableWebView
 import dvp.lib.browser.ui.widgets.bottombar.BottomBar
 import dvp.lib.browser.ui.widgets.progress.ProgressBar
@@ -19,7 +19,7 @@ fun ComposeBrowser(
     onBrowserStarted: () -> Unit,
 ) {
     val viewModel =  MainViewModel(navigationApi = Controller.getInstance())
-    BackHandler(onBack = { /* NOOP: disables closing browser with back press*/ })
+//    BackHandler(onBack = { /* NOOP: disables closing browser with back press*/ })
 
     Scaffold(
         topBar = {

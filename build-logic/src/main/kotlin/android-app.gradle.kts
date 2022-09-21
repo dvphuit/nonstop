@@ -2,9 +2,8 @@
 
 plugins {
     id("com.android.application")
-    id("android-base")
-    id("android-compose")
-    id("kotlin-android")
+    id("config")
+    id("compose")
     kotlin("android")
 }
 
