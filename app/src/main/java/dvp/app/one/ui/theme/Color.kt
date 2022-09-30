@@ -1,4 +1,4 @@
-package dvp.app.nonstop.ui.theme
+package dvp.app.one.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

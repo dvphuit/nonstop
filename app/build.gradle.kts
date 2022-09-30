@@ -3,7 +3,10 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":compose-main:book-ui"))
     implementation(project(":compose-main:browser-ui"))
+    implementation(project(":compose-main:youtube-ui"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
 

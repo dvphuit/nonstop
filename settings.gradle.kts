@@ -17,6 +17,7 @@ include(
     ":app",
     ":compose-main:youtube-ui",
     ":compose-main:browser-ui",
+    ":compose-main:book-ui",
     ":libs:js",
     ":libs:ytube",
     ":libs:browser",
