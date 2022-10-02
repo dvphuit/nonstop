@@ -1,3 +1,5 @@
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -23,3 +25,4 @@ include(
     ":libs:browser",
 )
 includeBuild("build-logic")
+include(":libs:compose-se-transition")

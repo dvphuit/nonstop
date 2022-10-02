@@ -1,6 +1,7 @@
 package dvp.lib.corebrowser.features.navigation
 
 
+import android.util.Log
 import dvp.lib.corebrowser.features.BrowserDelegate
 import dvp.lib.corebrowser.features.utils.URLUtils
 import dvp.lib.corebrowser.features.utils.URLUtilsImpl
@@ -36,6 +37,14 @@ class ComposeBrowserNavigationApi(
 
   override fun goBack() {
     browserDelegate?.delegateBack()
+  }
+
+  override fun close() {
+    Log.d("TEST", "close")
+  }
+
+  override fun share() {
+    Log.d("TEST", "share")
   }
 
   override fun addNavigationListener(browserNavigationListener: BrowserNavigationListener) {

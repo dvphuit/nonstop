@@ -1,10 +1,10 @@
 package dvp.lib.browser.ui
 
 import androidx.lifecycle.ViewModel
-import dvp.lib.browser.ui.widgets.bottombar.State as BottomBarState
+import dvp.lib.browser.ui.widgets.topbar.DisplayUrl
+import dvp.lib.browser.ui.widgets.topbar.State as BottomBarState
 import dvp.lib.browser.ui.widgets.progress.State as ProgressBarState
-import dvp.lib.browser.ui.widgets.toolbar.ToolbarState
-import dvp.lib.browser.ui.widgets.toolbar.DisplayUrl
+import dvp.lib.browser.ui.widgets.bottombar.ToolbarState
 import dvp.lib.corebrowser.features.BrowserDelegate
 import dvp.lib.corebrowser.features.navigation.BrowserNavigationApi
 import dvp.lib.corebrowser.features.navigation.BrowserNavigationListener
@@ -16,125 +16,131 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 internal class MainViewModel(
-  private val navigationApi: BrowserNavigationApi,
-  private val urlUtils: URLUtils = URLUtilsImpl(),
-  initialToolbarState: ToolbarState = ToolbarState(),
-  initialProgressState: ProgressBarState = ProgressBarState(),
-  initialBottomBarState: BottomBarState = BottomBarState(),
+    private val navigationApi: BrowserNavigationApi,
+    private val urlUtils: URLUtils = URLUtilsImpl(),
+    initialToolbarState: ToolbarState = ToolbarState(),
+    initialProgressState: ProgressBarState = ProgressBarState(),
+    initialBottomBarState: BottomBarState = BottomBarState(),
 ) : ViewModel(), BrowserNavigationListener {
 
-  private val _toolbarViewState = MutableStateFlow(initialToolbarState)
-  val toolbarViewState: StateFlow<ToolbarState> = _toolbarViewState.asStateFlow()
+    private val _toolbarViewState = MutableStateFlow(initialToolbarState)
+    val toolbarViewState: StateFlow<ToolbarState> = _toolbarViewState.asStateFlow()
 
-  private val _progressViewState = MutableStateFlow(initialProgressState)
-  val progressViewState: StateFlow<dvp.lib.browser.ui.widgets.progress.State> = _progressViewState.asStateFlow()
+    private val _progressViewState = MutableStateFlow(initialProgressState)
+    val progressViewState: StateFlow<dvp.lib.browser.ui.widgets.progress.State> =
+        _progressViewState.asStateFlow()
 
-  private val _bottomBarViewState = MutableStateFlow(initialBottomBarState)
-  val bottomBarViewState: StateFlow<BottomBarState> = _bottomBarViewState.asStateFlow()
+    private val _bottomBarViewState = MutableStateFlow(initialBottomBarState)
+    val bottomBarViewState: StateFlow<BottomBarState> = _bottomBarViewState.asStateFlow()
 
-  init {
-    updateDisplayUrl("")
-    navigationApi.addNavigationListener(this)
-  }
-
-  override fun onPageProgressChanged(newProgress: Int) {
-    _progressViewState.update {
-      it.copy(
-        progressPercentage = newProgress.toFloat() / 100,
-        showProgress = newProgress < 100
-      )
+    init {
+        updateDisplayUrl("")
+        navigationApi.addNavigationListener(this)
     }
-  }
 
-  override fun onNavigationStateUpdated(canGoBack: Boolean, canGoForward: Boolean) {
-    _bottomBarViewState.update {
-      it.copy(
-        canGoBack = canGoBack,
-        canGoForward = canGoForward,
-      )
+    override fun onPageProgressChanged(newProgress: Int) {
+        _progressViewState.update {
+            it.copy(
+                progressPercentage = newProgress.toFloat() / 100,
+                showProgress = newProgress < 100
+            )
+        }
     }
-  }
 
-  override fun onPageStarted(url: String) = updateDisplayUrl(url)
-
-  fun onQueryChange(newQuery: String) {
-    _toolbarViewState.update {
-      it.copy(
-        query = newQuery,
-        showClearButton = newQuery.isNotEmpty()
-      )
+    override fun onNavigationStateUpdated(canGoBack: Boolean, canGoForward: Boolean) {
+        _bottomBarViewState.update {
+            it.copy(
+                canGoBack = canGoBack,
+                canGoForward = canGoForward,
+            )
+        }
     }
-  }
 
-  fun onSubmit(url: String) {
-    updateDisplayUrl(url)
-    navigationApi.loadUrl(url)
-  }
+    override fun onPageStarted(url: String) = updateDisplayUrl(url)
 
-  fun onRefreshClicked() = navigationApi.reload()
-
-  fun onDisplayModeClicked() {
-    val currentPageUrl = toolbarViewState.value.currentPageUrl
-    val newQuery = currentPageUrl.ifEmpty { "" }
-
-    _toolbarViewState.update {
-      it.copy(
-        isEditMode = true,
-        query = newQuery,
-        showClearButton = newQuery.isNotEmpty()
-      )
+    fun onQueryChange(newQuery: String) {
+        _toolbarViewState.update {
+            it.copy(
+                query = newQuery,
+                showClearButton = newQuery.isNotEmpty()
+            )
+        }
     }
-  }
 
-  fun onGoBackClicked() = navigationApi.goBack()
-
-  fun onGoForwardClicked() = navigationApi.goForward()
-
-  fun setDelegate(browserDelegate: BrowserDelegate) {
-    navigationApi.setBrowserDelegate(browserDelegate)
-  }
-
-  fun onCancelClicked() {
-    _toolbarViewState.update { it.copy(isEditMode = false) }
-  }
-
-  fun onBackPressed() {
-    _toolbarViewState.update { it.copy(isEditMode = false) }
-  }
-
-  fun onClosed() {
-
-  }
-
-  fun onClearButtonClicked() {
-    _toolbarViewState.update {
-      it.copy(
-        query = "",
-        showClearButton = false
-      )
+    fun onSubmit(url: String) {
+        updateDisplayUrl(url)
+        navigationApi.loadUrl(url)
     }
-  }
 
-  private fun updateDisplayUrl(potentialUrl: String) {
-    val isValidUrl = urlUtils.isValidUrl(potentialUrl)
-    val (simpleUrl, isSafeUrl) = parseUrl(potentialUrl)
+    fun onRefreshClicked() = navigationApi.reload()
 
-    val displayText = when {
-      isValidUrl -> simpleUrl
-      else -> potentialUrl
+    fun onDisplayModeClicked() {
+        val currentPageUrl = toolbarViewState.value.currentPageUrl
+        val newQuery = currentPageUrl.ifEmpty { "" }
+
+        _toolbarViewState.update {
+            it.copy(
+                isEditMode = true,
+                query = newQuery,
+                showClearButton = newQuery.isNotEmpty()
+            )
+        }
     }
-    _toolbarViewState.update {
-      it.copy(
-        showPrivacyIcon = isValidUrl,
-        showHint = potentialUrl.isEmpty(),
-        isEditMode = false,
-        displayUrl = DisplayUrl(displayText, isSafeUrl),
-        currentPageUrl = if (isValidUrl) potentialUrl else ""
-      )
-    }
-  }
 
-  private fun parseUrl(url: String): Pair<String, Boolean> {
-    return urlUtils.getDisplayUrl(url) to url.contains("https")
-  }
+    fun onGoBackClicked() = navigationApi.goBack()
+    fun onGoForwardClicked() = navigationApi.goForward()
+
+    fun onShareClicked() = navigationApi.share()
+    fun onCloseClicked() = navigationApi.close()
+
+    fun setDelegate(browserDelegate: BrowserDelegate) {
+        navigationApi.setBrowserDelegate(browserDelegate)
+    }
+
+    fun onCancelClicked() {
+        _toolbarViewState.update { it.copy(isEditMode = false) }
+    }
+
+    fun onBackPressed() {
+        _toolbarViewState.update { it.copy(isEditMode = false) }
+    }
+
+    fun onClosed() {
+
+    }
+
+    fun onClearButtonClicked() {
+        _toolbarViewState.update {
+            it.copy(
+                query = "",
+                showClearButton = false
+            )
+        }
+    }
+
+    private fun updateDisplayUrl(potentialUrl: String) {
+        val isValidUrl = urlUtils.isValidUrl(potentialUrl)
+        val (simpleUrl, isSafeUrl) = parseUrl(potentialUrl)
+
+        val displayText = when {
+            isValidUrl -> simpleUrl
+            else -> potentialUrl
+        }
+        _toolbarViewState.update {
+            it.copy(
+                showHint = potentialUrl.isEmpty(),
+                isEditMode = false,
+                currentPageUrl = if (isValidUrl) potentialUrl else ""
+            )
+        }
+        _bottomBarViewState.update {
+            it.copy(
+                displayUrl = DisplayUrl(displayText, isSafeUrl)
+            )
+        }
+    }
+
+    private fun parseUrl(url: String): Pair<String, Boolean> {
+        return urlUtils.getDisplayUrl(url) to url.contains("https")
+    }
 }

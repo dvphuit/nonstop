@@ -8,6 +8,7 @@ kotlin = "1.7.10"
 compose_activity = "1.5.1"
 compose = "1.2.1"
 compose_compilerextension = "1.3.1"
+constraintlayout = "1.0.1"
 accompanist = "0.26.3-beta"
 
 androidx_test = "1.4.0"
@@ -46,6 +47,7 @@ compose_ui_unit = { module = "androidx.compose.ui:ui-unit", version.ref = "compo
 compose_runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
 compose_runtime_livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "compose" }
 compose_navigation_compose = { module = "androidx.navigation:navigation-compose", version.ref = "compose" }
+compose-constraintlayout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayout" }
 
 #accompanist
 accompanist_swipeRefresh = { module = "com.google.accompanist:accompanist-swiperefresh", version.ref = "accompanist" }
@@ -56,6 +58,7 @@ accompanist_insets = { module = "com.google.accompanist:accompanist-insets", ver
 accompanist_insets_ui = { module = "com.google.accompanist:accompanist-insets-ui", version.ref = "accompanist" }
 accompanist_flowLayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "accompanist" }
 accompanist_drawable_painter = { module = "com.google.accompanist:accompanist-drawablepainter", version.ref = "accompanist" }
+accompanist_navigation_animation = { module = "com.google.accompanist:accompanist-navigation-animation", version.ref = "accompanist" }
 
 #kotlin
 kotlinx_coroutines_core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlin" }

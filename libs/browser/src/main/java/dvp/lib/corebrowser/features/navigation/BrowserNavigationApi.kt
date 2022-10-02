@@ -13,6 +13,8 @@ interface BrowserNavigationApi {
   fun stop()
   fun goForward()
   fun goBack()
+  fun close()
+  fun share()
   fun loadUrl(url: String)
 }
 

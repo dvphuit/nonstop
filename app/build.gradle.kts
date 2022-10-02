@@ -18,6 +18,9 @@ dependencies {
     implementation(libs.compose.ui.unit)
 
     implementation(libs.accompanist.pager)
+    implementation(libs.accompanist.systemUi)
+//    implementation(libs.accompanist.insets)
+//    implementation(libs.accompanist.insets.ui)
 
     implementation(libs.espresso.core)
 }

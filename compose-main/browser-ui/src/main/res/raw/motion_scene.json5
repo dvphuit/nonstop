@@ -1,0 +1,77 @@
+{
+  ConstraintSets: {
+    start: {
+      text_field: {
+        width: 'spread',
+        height: 40,
+        start: ['parent', 'start', 16],
+        end: ['center', 'start', 16],
+        top: ['parent', 'top', 0],
+        bottom: ['parent', 'bottom', 0],
+      },
+      center: {
+        width: 40,
+        height: 40,
+        top: ['parent', 'top', 0],
+        bottom: ['parent', 'bottom', 0],
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+      },
+      menu: {
+        width: 40,
+        height: 40,
+        top: ['parent', 'top'],
+        bottom: ['parent', 'bottom'],
+        end: ['parent', 'end', 16],
+      },
+    },
+    end: {
+      text_field: {
+        width: 'spread',
+        height: 40,
+        start: ['parent', 'start', 16],
+        end: ['center', 'start', 16],
+        top: ['parent', 'top', 0],
+        bottom: ['parent', 'bottom', 0],
+      },
+      center: {
+        width: 40,
+        height: 40,
+        top: ['parent', 'top', 0],
+        bottom: ['parent', 'bottom', 0],
+        start: ['text_field', 'end', 0],
+        end: ['parent', 'end', 16],
+      },
+      menu: {
+        width: 0,
+        height: 0,
+        top: ['parent', 'top'],
+        bottom: ['parent', 'bottom'],
+        end: ['parent', 'end', 16],
+      }
+    }
+  },
+  Transitions: {
+    default: {
+      from: 'start',
+      to: 'end',
+      pathMotionArc: 'startHorizontal',
+      KeyFrames: {
+        KeyAttributes: [
+          {
+            target: ['text_field'],
+            frames: [0, 100]
+          },
+          {
+            target: ['center'],
+            frames: [0, 50, 100],
+          },
+          {
+            target: ['menu'],
+            frames: [0, 50, 100],
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,68 +1,58 @@
 package dvp.lib.browser.ui.widgets.bottombar
 
-import androidx.annotation.DrawableRes
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import dvp.lib.browser.ui.Border
+import dvp.lib.browser.ui.border
 import dvp.lib.corebrowser.R
-import dvp.lib.corebrowser.composer.ui.theme.getSystemThemeIcon
 
 @Composable
 internal fun BottomBar(
-  state: State,
-  onGoForwardButtonClicked: () -> Unit = {},
-  onGoBackButtonClicked: () -> Unit = {},
+  state: ToolbarState,
+  onQueryChange: (String) -> Unit = {},
+  onTextSubmitted: (String) -> Unit = {},
+  onDisplayToolbarClick: () -> Unit = {},
+  onRefreshClicked: () -> Unit = {},
+  onClearButtonClicked: () -> Unit = {},
+  onCloseButtonClicked: () -> Unit = {},
+  onBackPressed: () -> Unit = {},
+  onCancelClicked: () -> Unit = {},
 ) {
-  BottomAppBar(
-    contentColor = MaterialTheme.colors.primaryVariant,
-    backgroundColor = MaterialTheme.colors.background
-  ) {
-    BottomBarButton(
-      id = getSystemThemeIcon(
-        lightIcon = R.drawable.light_back,
-        darkIcon = R.drawable.dark_back
-      ),
-      enabled = state.canGoBack,
-      onButtonClicked = onGoBackButtonClicked,
-    )
-    BottomBarButton(
-      id = getSystemThemeIcon(
-        lightIcon = R.drawable.light_forward,
-        darkIcon = R.drawable.dark_forward,
-      ),
-      enabled = state.canGoForward,
-      onButtonClicked = onGoForwardButtonClicked,
-    )
-  }
-}
-
-@Composable
-internal fun BottomBarButton(
-  modifier: Modifier = Modifier,
-  @DrawableRes id: Int,
-  description: String = "",
-  enabled: Boolean = true,
-  onButtonClicked: () -> Unit = {},
-) {
-
-  IconButton(
-    modifier = modifier,
-    onClick = onButtonClicked,
-    enabled = enabled
-  ) {
-    val color = MaterialTheme.colors.onBackground
-    Icon(
-      painter = painterResource(id = id),
-      contentDescription = description,
-      tint = if (enabled) {
-        color
+  val hint = stringResource(id = R.string.browser_toolbar_hint)
+  Column {
+    Divider(color = Color.LightGray)
+    Crossfade(
+      targetState = state.isEditMode, animationSpec = tween(500)) { isEditMode ->
+      if (isEditMode) {
+        EditToolbar(
+          query = state.query,
+          hint = hint,
+          showClearButton = state.showClearButton,
+          onTextSubmitted = onTextSubmitted,
+          onQueryChange = onQueryChange,
+          onClearButtonClicked = onClearButtonClicked,
+          onBackPressed = onBackPressed,
+          onCancelClicked = onCancelClicked,
+        )
       } else {
-        color.copy(alpha = 0.6f)
-      },
-    )
+        DisplayToolbar(
+          onUrlClicked = onDisplayToolbarClick,
+          onRefreshClicked = onRefreshClicked,
+          onCloseButtonClicked = onCloseButtonClicked,
+        )
+      }
+    }
   }
 }

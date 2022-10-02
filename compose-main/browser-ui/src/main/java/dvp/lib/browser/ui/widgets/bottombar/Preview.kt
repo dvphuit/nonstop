@@ -1,50 +1,121 @@
 package dvp.lib.browser.ui.widgets.bottombar
 
-import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import dvp.lib.corebrowser.composer.ui.theme.BrowserTheme
 
-@Preview(
-  name = "LIGHT - FORWARD ENABLED",
-)
 @Composable
-fun BrowserBottomBarPreview() = BrowserTheme {
+@Preview(
+  name = "LIGHT - EDIT MODE - NO QUERY",
+)
+fun BrowserToolbarEditModeNoUrl() = BrowserTheme {
   BottomBar(
-    State(
-      canGoForward = true,
-    )
+    state = ToolbarState(
+      isEditMode = true,
+    ),
+    onCancelClicked = {}
   )
 }
 
-@Preview(
-  name = "DARK - FORWARD ENABLED",
-  uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Composable
-fun BrowserBottomBarPreview2() = BrowserTheme {
+@Preview(
+  name = "DARK - EDIT MODE - NO QUERY",
+  uiMode = UI_MODE_NIGHT_YES
+)
+fun BrowserToolbarEditModeNoUrlDark() = BrowserTheme {
   BottomBar(
-    State(canGoForward = true)
+    state = ToolbarState(
+      isEditMode = true,
+    ),
+    onCancelClicked = {}
   )
 }
 
-@Preview(
-  name = "LIGHT - BACK ENABLED",
-)
 @Composable
-fun BrowserBottomBarPreview3() = BrowserTheme {
+@Preview(
+  name = "LIGHT - EDIT MODE - WITH QUERY",
+)
+fun BrowserToolbarEditModeUrl() = BrowserTheme {
   BottomBar(
-    State(canGoBack = true)
+    state = ToolbarState(
+      isEditMode = true,
+      query = "https://bestbuy.com/",
+      showClearButton = true,
+    ),
+    onCancelClicked = {}
   )
 }
 
-@Preview(
-  name = "DARK - BACK ENABLED",
-  uiMode = Configuration.UI_MODE_NIGHT_YES
-)
 @Composable
-fun BrowserBottomBarPreview4() = BrowserTheme {
+@Preview(
+  name = "DARK - EDIT MODE - WITH QUERY",
+  uiMode = UI_MODE_NIGHT_YES
+)
+fun BrowserToolbarEditModeDark() = BrowserTheme {
   BottomBar(
-    State(canGoBack = true)
+    state = ToolbarState(
+      isEditMode = true,
+      query = "https://bestbuy.com/",
+      showClearButton = true,
+    ),
+    onCancelClicked = {}
+  )
+}
+
+@Composable
+@Preview(
+  name = "LIGHT - DISPLAY MODE - NO URL",
+)
+fun BrowserToolbarDisplayModeNoUrl() = BrowserTheme {
+  BottomBar(
+    state = ToolbarState(
+      isEditMode = false,
+    ),
+    onCancelClicked = {}
+  )
+}
+
+@Composable
+@Preview(
+  name = "DARK - DISPLAY MODE - NO URL",
+  uiMode = UI_MODE_NIGHT_YES
+)
+fun BrowserToolbarDisplayModeNoUrlDark() = BrowserTheme {
+  BottomBar(
+    state = ToolbarState(
+      isEditMode = false,
+    ),
+    onCancelClicked = {}
+  )
+}
+
+@Composable
+@Preview(
+  name = "LIGHT - DISPLAY MODE - URL"
+)
+fun BrowserToolbarDisplayModeWithSafeUrl() = BrowserTheme {
+  BottomBar(
+    state = ToolbarState(
+      isEditMode = false,
+      showHint = false,
+    ),
+    onCancelClicked = {}
+  )
+}
+
+@Composable
+@Preview(
+  name = "DARK - DISPLAY MODE - URL",
+  uiMode = UI_MODE_NIGHT_YES,
+)
+fun BrowserToolbarDisplayModeWithSafeUrlDark() = BrowserTheme {
+  BottomBar(
+    state = ToolbarState(
+      isEditMode = false,
+      currentPageUrl = "https://bestbuy.com/",
+      showHint = false,
+    ),
+    onCancelClicked = {}
   )
 }
