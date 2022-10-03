@@ -1,15 +1,19 @@
 package dvp.lib.browser
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.ListItem
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +23,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -28,123 +31,126 @@ import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 import androidx.constraintlayout.compose.layoutId
 import dvp.lib.browser.ui.MainViewModel
-import dvp.lib.browser.ui.widgets.ComposableWebView
-import dvp.lib.browser.ui.widgets.bottombar.BottomBar
-import dvp.lib.browser.ui.widgets.progress.ProgressBar
-import dvp.lib.browser.ui.widgets.topbar.TopBar
 import dvp.lib.corebrowser.composer.ui.theme.BrowserRoundedShape
 import kotlin.math.min
+
+private var showSearch: Boolean by mutableStateOf(false)
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun BrowserUI() {
     val viewModel = MainViewModel(navigationApi = Controller.getInstance())
-//    BackHandler(onBack = {
-//        Log.d("BrowserUI", "on back pressed")
-//    })
-
-    Scaffold(
-        modifier = Modifier.systemBarsPadding(),
-        topBar = {
-            TopBar(
-                viewModel.bottomBarViewState.collectAsState().value,
-                onCloseClicked = viewModel::onCloseClicked,
-                onSharedClicked = viewModel::onShareClicked,
-            )
-        },
-        bottomBar = {
-            BottomBar(
-                viewModel.toolbarViewState.collectAsState().value,
-                onQueryChange = viewModel::onQueryChange,
-                onTextSubmitted = viewModel::onSubmit,
-                onDisplayToolbarClick = viewModel::onDisplayModeClicked,
-                onRefreshClicked = viewModel::onRefreshClicked,
-                onClearButtonClicked = viewModel::onClearButtonClicked,
-                onCancelClicked = viewModel::onCancelClicked,
-                onBackPressed = viewModel::onBackPressed,
-                onCloseButtonClicked = viewModel::onClosed,
-            )
-        },
-    ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            ProgressBar(viewModel.progressViewState.collectAsState().value)
-            ComposableWebView(
-                onReady = {
-                    Log.d("BrowserUI", "on ready")
-                },
-                onBrowserDelegateCreated = viewModel::setDelegate
-            )
-        }
-    }
-}
-
-private var showSearch: Boolean by mutableStateOf(false)
-
-@Composable
-fun BrowserMain() {
-
     val focusManager = LocalFocusManager.current
     val modifier = Modifier
     BackHandler(onBack = {
         println("TEST: back pressed")
         focusManager.clearFocus()
     })
+//    Scaffold(
+//        modifier = Modifier.systemBarsPadding(),
+//        topBar = {
+//            TopBar(
+//                viewModel.bottomBarViewState.collectAsState().value,
+//                onCloseClicked = viewModel::onCloseClicked,
+//                onSharedClicked = viewModel::onShareClicked,
+//            )
+//        },
+//        bottomBar = {
+//            BottomBar(
+//                viewModel.toolbarViewState.collectAsState().value,
+//                onQueryChange = viewModel::onQueryChange,
+//                onTextSubmitted = viewModel::onSubmit,
+//                onDisplayToolbarClick = viewModel::onDisplayModeClicked,
+//                onRefreshClicked = viewModel::onRefreshClicked,
+//                onClearButtonClicked = viewModel::onClearButtonClicked,
+//                onCancelClicked = viewModel::onCancelClicked,
+//                onBackPressed = viewModel::onBackPressed,
+//                onCloseButtonClicked = viewModel::onClosed,
+//            )
+//            SearchBar(focusManager)
+//        },
+//    ) {
+//        Column(
+//            modifier = Modifier.fillMaxSize()
+//        ) {
+//            ProgressBar(viewModel.progressViewState.collectAsState().value)
+//            ComposableWebView(
+//                onReady = {
+//                    Log.d("BrowserUI", "on ready")
+//                },
+//                onBrowserDelegateCreated = viewModel::setDelegate
+//            )
+//        }
 
+//        Column(
+//            modifier = modifier
+//                .systemBarsPadding()
+//                .fillMaxSize()
+//                .background(Color.Cyan)
+//        ) {
+//            Crossfade(
+//                modifier = modifier.weight(1f),
+//                targetState = showSearch,
+//                animationSpec = tween(durationMillis = 300)
+//            ) { state ->
+//                if (state) {
+//                    SearchHistory()
+//                } else {
+//                    BrowserHome()
+//                }
+//            }
+//            SearchBar(focusManager)
+//        }
+//        SearchBar(focusManager)
+//    }
+    SearchBar(focusManager)
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun SearchHistory(){
     Column(
-        modifier = modifier
-            .systemBarsPadding()
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
             .fillMaxSize()
-            .background(Color.Cyan)
+            .background(Color.Yellow),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-
-        Crossfade(
-            modifier = modifier.weight(1f),
-            targetState = showSearch,
-            animationSpec = tween(durationMillis = 300)
-        ) { state ->
-            if (state) {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .clickable {
-                            focusManager.clearFocus()
-                        }
-                        .background(Color.Yellow),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-
-                }
-            } else {
-                Column(
-                    modifier = modifier
-                        .fillMaxSize()
-                        .background(Color.Black),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Box(
-                        modifier = modifier
-                            .width(200.dp)
-                            .height(50.dp)
-                            .background(Color.Red)
-                    )
-                    Box(
-                        modifier = modifier
-                            .padding(16.dp)
-                            .fillMaxWidth()
-                            .height(200.dp)
-                            .background(Color.Blue)
-                    )
+            List(30){
+                ListItem() {
+                    Text(text = "Item $it")
                 }
             }
-        }
-        SearchBar(focusManager)
     }
 }
 
+@Composable
+fun BrowserHome(layoutId: String){
+    val modifier = Modifier
+    Column(
+        modifier = Modifier
+            .layoutId(layoutId)
+            .fillMaxSize()
+            .background(Color.Black),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Box(
+            modifier = modifier
+                .width(200.dp)
+                .height(50.dp)
+                .background(Color.Red)
+        )
+        Box(
+            modifier = modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .height(200.dp)
+                .background(Color.Blue)
+        )
+    }
+}
 
 @OptIn(ExperimentalMotionApi::class)
 @Composable
@@ -160,7 +166,6 @@ fun SearchBar(focusManager: FocusManager) {
     var textFieldValueState by remember { mutableStateOf(TextFieldValue("")) }
     val keyboardState = remember { KeyBoardState() }
     keyboardState.listenState {
-        println("TEST: state = $it")
         if (it == KeyBoardState.State.Closing) {
             focusManager.clearFocus()
         }
@@ -172,10 +177,19 @@ fun SearchBar(focusManager: FocusManager) {
         progress = min(1f, (keyboardState.height.toFloat() / keyboardState.maxHeight)),
         modifier = modifier
             .background(Color.LightGray)
-            .fillMaxWidth()
+            .fillMaxSize()
             .imePadding()
             .padding(vertical = 8.dp)
     ) {
+
+//        BrowserHome("browser_home")
+        Box(
+            modifier = modifier
+//                .width(200.dp)
+//                .height(50.dp)
+                .layoutId("browser_home")
+                .background(Color.Red)
+        )
         BasicTextField(
             singleLine = true,
             value = textFieldValueState,
@@ -223,44 +237,3 @@ fun SearchBar(focusManager: FocusManager) {
     }
 }
 
-
-class KeyBoardState {
-    var height by mutableStateOf(0)
-        private set
-    var maxHeight by mutableStateOf(1000)
-        private set
-
-    private var lastState = State.Closed
-    private var lastHeight = 0
-
-    @SuppressLint("ComposableNaming")
-    @JvmName("setHeight1")
-    @Composable
-    fun listenState(listener: (State) -> Unit) {
-        this.height = WindowInsets.ime.getBottom(LocalDensity.current)
-        if (height > maxHeight) {
-            maxHeight = height
-        }
-
-        val mState = when {
-            height == 0 -> State.Closed
-            height == maxHeight -> State.Opened
-            height > lastHeight -> State.Opening
-            height < lastHeight -> State.Closing
-            else -> State.Closed
-        }
-        lastHeight = height
-        if (lastState != mState) {
-            listener.invoke(mState)
-            lastState = mState
-        }
-
-    }
-
-    enum class State {
-        Closed,
-        Closing,
-        Opened,
-        Opening,
-    }
-}

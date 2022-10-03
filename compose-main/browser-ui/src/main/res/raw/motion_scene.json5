@@ -1,13 +1,21 @@
 {
   ConstraintSets: {
     start: {
+      browser_home: {
+        width: 'spread',
+        height: 'spread',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        top: ['parent', 'top', 0],
+        bottom: ['text_field', 'top', 0],
+      },
       text_field: {
         width: 'spread',
         height: 40,
         start: ['parent', 'start', 16],
         end: ['center', 'start', 16],
-        top: ['parent', 'top', 0],
-        bottom: ['parent', 'bottom', 0],
+        top: ['browser_home', 'bottom', 8],
+        bottom: ['parent', 'bottom', 8],
       },
       center: {
         width: 40,
@@ -23,6 +31,7 @@
         top: ['parent', 'top'],
         bottom: ['parent', 'bottom'],
         end: ['parent', 'end', 16],
+        baseline: ['text_field', 'text_field', 0]
       },
     },
     end: {

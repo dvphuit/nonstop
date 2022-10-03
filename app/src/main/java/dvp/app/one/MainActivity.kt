@@ -20,7 +20,7 @@ import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dvp.app.one.ui.theme.NonStopTheme
 import dvp.lib.book.BookUI
-import dvp.lib.browser.BrowserMain
+import dvp.lib.browser.BrowserUI
 import dvp.lib.youtube.YoutubeUI
 import kotlin.math.absoluteValue
 
@@ -78,7 +78,7 @@ fun App() {
 
                 when (page) {
                     1 -> BookUI()
-                    0 -> BrowserMain()
+                    0 -> BrowserUI()
                     2 -> YoutubeUI()
                 }
             }
