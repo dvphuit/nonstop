@@ -176,19 +176,21 @@ fun SearchBar(focusManager: FocusManager) {
         motionScene = MotionScene(content = motionScene),
         progress = min(1f, (keyboardState.height.toFloat() / keyboardState.maxHeight)),
         modifier = modifier
-            .background(Color.LightGray)
+            .background(Color.Green)
             .fillMaxSize()
             .imePadding()
-            .padding(vertical = 8.dp)
     ) {
 
 //        BrowserHome("browser_home")
         Box(
             modifier = modifier
-//                .width(200.dp)
-//                .height(50.dp)
                 .layoutId("browser_home")
                 .background(Color.Red)
+        )
+        Box(
+            modifier = modifier
+                .layoutId("browser_recent")
+                .background(Color.Yellow)
         )
         BasicTextField(
             singleLine = true,

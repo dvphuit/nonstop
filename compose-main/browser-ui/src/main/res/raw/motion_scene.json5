@@ -7,46 +7,65 @@
         start: ['parent', 'start', 0],
         end: ['parent', 'end', 0],
         top: ['parent', 'top', 0],
-        bottom: ['text_field', 'top', 0],
+        bottom: ['text_field', 'top', 8],
+      },
+      browser_recent: {
+        width: 'spread',
+        height: 'spread',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        bottom: ['parent', 'top', 0],
       },
       text_field: {
         width: 'spread',
         height: 40,
         start: ['parent', 'start', 16],
         end: ['center', 'start', 16],
-        top: ['browser_home', 'bottom', 8],
         bottom: ['parent', 'bottom', 8],
       },
       center: {
         width: 40,
         height: 40,
-        top: ['parent', 'top', 0],
-        bottom: ['parent', 'bottom', 0],
+        bottom: ['parent', 'bottom', 8],
         start: ['parent', 'start', 0],
         end: ['parent', 'end', 0],
       },
       menu: {
         width: 40,
         height: 40,
-        top: ['parent', 'top'],
-        bottom: ['parent', 'bottom'],
+        bottom: ['parent', 'bottom', 8],
         end: ['parent', 'end', 16],
-        baseline: ['text_field', 'text_field', 0]
       },
     },
     end: {
+      browser_home: {
+        width: 'spread',
+        height: 'spread',
+        translationZ: -5,
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        top: ['parent', 'top', 0],
+        bottom: ['text_field', 'top', 56],
+      },
+      browser_recent: {
+        width: 'spread',
+        height: 'spread',
+        visibility: 'visible',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        top: ['parent', 'top', 0],
+        bottom: ['text_field', 'top', 8],
+      },
       text_field: {
         width: 'spread',
         height: 40,
         start: ['parent', 'start', 16],
         end: ['center', 'start', 16],
-        top: ['parent', 'top', 0],
         bottom: ['parent', 'bottom', 0],
       },
       center: {
         width: 40,
         height: 40,
-        top: ['parent', 'top', 0],
         bottom: ['parent', 'bottom', 0],
         start: ['text_field', 'end', 0],
         end: ['parent', 'end', 16],
@@ -54,7 +73,6 @@
       menu: {
         width: 0,
         height: 0,
-        top: ['parent', 'top'],
         bottom: ['parent', 'bottom'],
         end: ['parent', 'end', 16],
       }
@@ -67,6 +85,14 @@
       pathMotionArc: 'startHorizontal',
       KeyFrames: {
         KeyAttributes: [
+          {
+            target: ['browser_home'],
+            frames: [0, 100],
+          },
+          {
+            target: ['browser_recent'],
+            frames: [0, 100]
+          },
           {
             target: ['text_field'],
             frames: [0, 100]
