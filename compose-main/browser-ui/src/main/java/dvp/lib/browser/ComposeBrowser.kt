@@ -2,10 +2,7 @@ package dvp.lib.browser
 
 import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
@@ -36,103 +33,81 @@ import kotlin.math.min
 
 private var showSearch: Boolean by mutableStateOf(false)
 
+@OptIn(ExperimentalMotionApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun BrowserUI() {
     val viewModel = MainViewModel(navigationApi = Controller.getInstance())
     val focusManager = LocalFocusManager.current
-    val modifier = Modifier
     BackHandler(onBack = {
         println("TEST: back pressed")
         focusManager.clearFocus()
     })
-//    Scaffold(
-//        modifier = Modifier.systemBarsPadding(),
-//        topBar = {
-//            TopBar(
-//                viewModel.bottomBarViewState.collectAsState().value,
-//                onCloseClicked = viewModel::onCloseClicked,
-//                onSharedClicked = viewModel::onShareClicked,
-//            )
-//        },
-//        bottomBar = {
-//            BottomBar(
-//                viewModel.toolbarViewState.collectAsState().value,
-//                onQueryChange = viewModel::onQueryChange,
-//                onTextSubmitted = viewModel::onSubmit,
-//                onDisplayToolbarClick = viewModel::onDisplayModeClicked,
-//                onRefreshClicked = viewModel::onRefreshClicked,
-//                onClearButtonClicked = viewModel::onClearButtonClicked,
-//                onCancelClicked = viewModel::onCancelClicked,
-//                onBackPressed = viewModel::onBackPressed,
-//                onCloseButtonClicked = viewModel::onClosed,
-//            )
-//            SearchBar(focusManager)
-//        },
-//    ) {
-//        Column(
-//            modifier = Modifier.fillMaxSize()
-//        ) {
-//            ProgressBar(viewModel.progressViewState.collectAsState().value)
-//            ComposableWebView(
-//                onReady = {
-//                    Log.d("BrowserUI", "on ready")
-//                },
-//                onBrowserDelegateCreated = viewModel::setDelegate
-//            )
-//        }
+    val context = LocalContext.current
+    val motionScene = remember {
+        context.resources
+            .openRawResource(R.raw.home_scene)
+            .readBytes()
+            .decodeToString()
+    }
+    val searchBarScene = remember {
+        context.resources
+            .openRawResource(R.raw.search_bar_scene)
+            .readBytes()
+            .decodeToString()
+    }
 
-//        Column(
-//            modifier = modifier
-//                .systemBarsPadding()
-//                .fillMaxSize()
-//                .background(Color.Cyan)
-//        ) {
-//            Crossfade(
-//                modifier = modifier.weight(1f),
-//                targetState = showSearch,
-//                animationSpec = tween(durationMillis = 300)
-//            ) { state ->
-//                if (state) {
-//                    SearchHistory()
-//                } else {
-//                    BrowserHome()
-//                }
-//            }
-//            SearchBar(focusManager)
-//        }
-//        SearchBar(focusManager)
-//    }
-    SearchBar(focusManager)
+    val keyboardState = remember { KeyBoardState() }
+    keyboardState.listenState {
+        if (it == KeyBoardState.State.Closing) {
+            focusManager.clearFocus()
+        }
+    }
+
+    Scaffold() {
+        val progress = min(1f, (keyboardState.height.toFloat() / keyboardState.maxHeight))
+        val modifier = Modifier
+        MotionLayout(
+            motionScene = MotionScene(content = motionScene),
+            progress = progress,
+            modifier = modifier
+                .fillMaxSize()
+                .navigationBarsPadding()
+                .imePadding()
+        ) {
+            BrowserHome()
+            BrowserRecent()
+            SearchBar(searchBarScene, progress)
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SearchHistory(){
+fun BrowserRecent() {
     Column(
         modifier = Modifier
+            .layoutId("browser_recent")
             .verticalScroll(rememberScrollState())
-            .fillMaxSize()
             .background(Color.Yellow),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-            List(30){
-                ListItem() {
-                    Text(text = "Item $it")
-                }
+        List(30) {
+            ListItem() {
+                Text(text = "Item $it")
             }
+        }
     }
 }
 
 @Composable
-fun BrowserHome(layoutId: String){
+fun BrowserHome() {
     val modifier = Modifier
     Column(
         modifier = Modifier
-            .layoutId(layoutId)
-            .fillMaxSize()
-            .background(Color.Black),
+            .layoutId("browser_home")
+            .background(Color.Cyan),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -152,46 +127,23 @@ fun BrowserHome(layoutId: String){
     }
 }
 
-@OptIn(ExperimentalMotionApi::class)
+@OptIn(ExperimentalMotionApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun SearchBar(focusManager: FocusManager) {
-    val context = LocalContext.current
-    val motionScene = remember {
-        context.resources
-            .openRawResource(R.raw.motion_scene)
-            .readBytes()
-            .decodeToString()
-    }
+fun SearchBar(
+    motionScene: String,
+    progress: Float
+) {
     val focusRequester = remember { FocusRequester() }
     var textFieldValueState by remember { mutableStateOf(TextFieldValue("")) }
-    val keyboardState = remember { KeyBoardState() }
-    keyboardState.listenState {
-        if (it == KeyBoardState.State.Closing) {
-            focusManager.clearFocus()
-        }
-    }
 
     val modifier = Modifier
     MotionLayout(
         motionScene = MotionScene(content = motionScene),
-        progress = min(1f, (keyboardState.height.toFloat() / keyboardState.maxHeight)),
+        progress = progress,
         modifier = modifier
-            .background(Color.Green)
-            .fillMaxSize()
-            .imePadding()
+            .layoutId("search_bar")
+//            .imePadding()
     ) {
-
-//        BrowserHome("browser_home")
-        Box(
-            modifier = modifier
-                .layoutId("browser_home")
-                .background(Color.Red)
-        )
-        Box(
-            modifier = modifier
-                .layoutId("browser_recent")
-                .background(Color.Yellow)
-        )
         BasicTextField(
             singleLine = true,
             value = textFieldValueState,
@@ -201,12 +153,11 @@ fun SearchBar(focusManager: FocusManager) {
             decorationBox = { innerTextField ->
                 Box(
                     modifier = modifier
-                        .fillMaxWidth()
                         .background(
-                            color = Color.Magenta,
+                            color = Color.Gray,
                             shape = BrowserRoundedShape
                         )
-                        .padding(vertical = 12.dp, horizontal = 16.dp)
+                        .padding(vertical = 10.dp, horizontal = 16.dp)
                 ) {
                     innerTextField()
                 }
@@ -220,20 +171,20 @@ fun SearchBar(focusManager: FocusManager) {
         )
         Box(
             modifier = modifier
-                .focusRequester(focusRequester)
                 .background(
                     color = Color.Red,
                     shape = BrowserRoundedShape
                 )
+                .size(40.dp)
                 .layoutId("center")
         )
         Box(
             modifier = modifier
-                .focusRequester(focusRequester)
                 .background(
                     color = Color.Blue,
                     shape = BrowserRoundedShape
                 )
+                .size(40.dp)
                 .layoutId("menu")
         )
     }

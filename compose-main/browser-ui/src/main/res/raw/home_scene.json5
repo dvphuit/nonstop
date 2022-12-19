@@ -1,0 +1,92 @@
+{
+  ConstraintSets: {
+    start: {
+      browser_home: {
+        width:  'spread',
+        height: 'spread',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        top: ['parent', 'top', 0],
+        bottom: ['search_bar', 'top', 0],
+      },
+      browser_recent: {
+        width: 'spread',
+        height: 'spread',
+        visibility: 'invisible',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        bottom: ['search_bar', 'top', 0],
+      },
+      search_bar: {
+        width: 'spread',
+        height: 'wrap',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        bottom: ['parent', 'bottom', 0],
+      },
+    },
+    end: {
+      browser_home: {
+        width: 'spread',
+        height: 'spread',
+        visibility: 'invisible',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        top: ['parent', 'top', 0],
+        bottom: ['search_bar', 'top', 0],
+      },
+      browser_recent: {
+        width: 'spread',
+        height: 'spread',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        top: ['parent', 'top', 0],
+        bottom: ['search_bar', 'top', 0],
+      },
+      search_bar: {
+        width: 'spread',
+        height: 'preferWrap',
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+        bottom: ['parent', 'bottom', 0],
+      },
+
+    }
+  },
+  Transitions: {
+    default: {
+      from: 'start',
+      to: 'end',
+      pathMotionArc: 'startVertical',
+      KeyFrames: {
+        KeyAttributes: [
+          {
+            target: ['browser_home'],
+            frames: [0, 100],
+            translationZ: [0, -100],
+            translationY: [0, 500],
+          },
+          {
+            target: ['browser_recent'],
+            frames: [0, 100],
+            translationZ: [0, 1],
+            translationY: [-100, 0]
+          },
+//          {
+//            target: ['text_field'],
+//            frames: [0, 100]
+//          },
+//          {
+//            target: ['center'],
+//            frames: [0, 50, 100],
+//          },
+//          {
+//            target: ['menu'],
+//            frames: [0, 100],
+//            alpha: [1, 0],
+//          }
+        ]
+      }
+    }
+  }
+}

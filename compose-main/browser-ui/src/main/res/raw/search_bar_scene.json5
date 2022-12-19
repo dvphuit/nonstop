@@ -1,0 +1,90 @@
+{
+  ConstraintSets: {
+    start: {
+      text_field: {
+        width: 'spread',
+        height: 'wrap',
+        start: ['parent', 'start', 16],
+        end: ['center', 'start', 16],
+        bottom: ['parent', 'bottom'],
+        top: ['parent', 'top', 8],
+      },
+      center: {
+        width: 'wrap',
+        height: 'wrap',
+        bottom: ['parent', 'bottom'],
+        top: ['text_field', 'top'],
+        start: ['parent', 'start', 0],
+        end: ['parent', 'end', 0],
+      },
+      menu: {
+        width: 'wrap',
+        height: 'wrap',
+        bottom: ['text_field', 'bottom'],
+        top: ['text_field', 'top'],
+        end: ['parent', 'end', 16],
+      },
+    },
+    end: {
+      text_field: {
+        width: 'spread',
+        height: 'wrap',
+        start: ['parent', 'start', 16],
+        end: ['center', 'start', 16],
+        bottom: ['parent', 'bottom', 0],
+        top: ['parent', 'top', 8]
+      },
+      center: {
+        width: 'wrap',
+        height: 'wrap',
+        bottom: ['parent', 'bottom'],
+        top: ['text_field', 'top'],
+        end: ['parent', 'end', 16]
+      },
+      menu: {
+        width: 0,
+        height: 0,
+        visibility: 'gone',
+        bottom: ['text_field', 'bottom'],
+        top: ['text_field', 'top'],
+        end: ['parent', 'end', 16],
+      }
+    }
+  },
+//  Transitions: {
+//    default: {
+//      from: 'start',
+//      to: 'end',
+//      pathMotionArc: 'startHorizontal',
+//      KeyFrames: {
+//        KeyAttributes: [
+////          {
+////            target: ['browser_home'],
+////            frames: [0, 100],
+////            translationZ: [0, -100],
+////            translationY: [0, 500],
+////          },
+////          {
+////            target: ['browser_recent'],
+////            frames: [0, 100],
+////            translationZ: [0, 1],
+////            translationY: [-100, 0]
+////          },
+////          {
+////            target: ['text_field'],
+////            frames: [0, 100]
+////          },
+////          {
+////            target: ['center'],
+////            frames: [0, 50, 100],
+////          },
+////          {
+////            target: ['menu'],
+////            frames: [0, 100],
+////            alpha: [1, 0],
+////          }
+//        ]
+//      }
+//    }
+//  }
+}
