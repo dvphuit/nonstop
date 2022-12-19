@@ -7,6 +7,8 @@ buildscript {
     dependencies {
         classpath(":build-logic")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10")
+        classpath("org.jetbrains.kotlin:kotlin-serialization:${libs.versions.kotlin.get()}")
+
     }
 }
 

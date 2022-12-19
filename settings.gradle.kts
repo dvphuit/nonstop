@@ -26,3 +26,4 @@ include(
 )
 includeBuild("build-logic")
 include(":libs:compose-se-transition")
+include(":data:youtube-data")

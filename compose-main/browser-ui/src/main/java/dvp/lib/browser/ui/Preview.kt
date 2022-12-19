@@ -8,7 +8,7 @@ import dvp.lib.corebrowser.composer.ui.theme.BrowserTheme
 
 @Composable
 @Preview(
-  name = "LIGHT - Klarna Browser",
+  name = "LIGHT",
 )
 fun Browser() {
   ThemedBrowser()
@@ -16,7 +16,7 @@ fun Browser() {
 
 @Composable
 @Preview(
-  name = "DARK - KlarnaBrowser",
+  name = "DARK",
   uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 fun BrowserDark() {

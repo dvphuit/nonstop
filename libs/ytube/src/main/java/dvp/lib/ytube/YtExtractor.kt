@@ -21,7 +21,10 @@ class YtExtractor {
 
         return buildJsonObject {
             put("page", "watch")
-            put("cver", body.substringAfter("{\"key\":\"cver\",\"value\":\"").substringBefore("\"}"))
+            put(
+                "cver",
+                body.substringAfter("{\"key\":\"cver\",\"value\":\"").substringBefore("\"}")
+            )
 
             var playerResponse: JsonElement? = null
             try {
@@ -54,7 +57,7 @@ class YtExtractor {
                     val playerUrl = getHTML5PlayerUrl(body)
                     put("html5player", playerUrl)
 
-                    val html5Player = HttpClient.getString(Const.YOUTUBE_URL + playerUrl)
+                    val html5Player = HttpClient.getYtString(playerUrl)
                     Sig.decipherFormats(formats, html5Player)
                 } else {
                     formats
@@ -66,8 +69,9 @@ class YtExtractor {
     }
 
     private fun getHTML5PlayerUrl(body: String): String? {
-        val html5playerRes = Regex("<script\\s+src=\"([^\"]+)\"(?:\\s+type=\"text/javascript\")?\\s+name=\"player_ias/base\"\\s*>|\"jsUrl\":\"([^\"]+)\"")
-            .find(body)
+        val html5playerRes =
+            Regex("<script\\s+src=\"([^\"]+)\"(?:\\s+type=\"text/javascript\")?\\s+name=\"player_ias/base\"\\s*>|\"jsUrl\":\"([^\"]+)\"")
+                .find(body)
 
         return (html5playerRes?.groups?.get(1) ?: html5playerRes?.groups?.get(2))?.value
     }

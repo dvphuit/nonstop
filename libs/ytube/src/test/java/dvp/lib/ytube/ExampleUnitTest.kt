@@ -12,11 +12,6 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
-    }
-
-    @Test
     fun urlTest(){
         runBlocking {
             val start = System.currentTimeMillis()
@@ -24,6 +19,7 @@ class ExampleUnitTest {
                 isTest = true
                 getBasicInfo("aqz-KE-bpKQ")
             }
+            println("info: $info")
             println("extract end at ${System.currentTimeMillis() - start}ms")
         }
     }
