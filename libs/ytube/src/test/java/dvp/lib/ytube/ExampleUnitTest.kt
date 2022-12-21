@@ -1,5 +1,7 @@
 package dvp.lib.ytube
 
+import dvp.lib.ytube.network.VideoApi
+import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
@@ -21,6 +23,16 @@ class ExampleUnitTest {
             }
             println("info: $info")
             println("extract end at ${System.currentTimeMillis() - start}ms")
+        }
+    }
+
+
+    @Test
+    fun apiTest(){
+        val api = VideoApi()
+        runBlocking {
+            val res = api.list()
+            println(res.bodyAsText())
         }
     }
 }
