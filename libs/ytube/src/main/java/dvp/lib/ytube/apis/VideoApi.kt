@@ -1,4 +1,4 @@
-package dvp.lib.ytube.network
+package dvp.lib.ytube.apis
 
 import dvp.lib.ytube.apis.BaseApi
 import io.ktor.client.statement.*

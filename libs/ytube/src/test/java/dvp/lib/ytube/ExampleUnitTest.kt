@@ -1,11 +1,9 @@
 package dvp.lib.ytube
 
-import dvp.lib.ytube.network.VideoApi
+import dvp.lib.ytube.apis.VideoApi
 import io.ktor.client.statement.*
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).

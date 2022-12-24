@@ -1,13 +1,19 @@
 package dvp.app.one
 
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -16,7 +22,11 @@ import androidx.core.view.WindowCompat
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.auth.api.identity.Identity
+import dvp.app.one.oauth.GetAccessToken
+import dvp.app.one.oauth.OneTapSignInWithGoogle
+import dvp.app.one.oauth.State
+import dvp.app.one.oauth.rememberOneTapSignInState
 import dvp.app.one.ui.theme.NonStopTheme
 import dvp.lib.book.BookUI
 import dvp.lib.browser.BrowserUI
@@ -32,17 +42,62 @@ class MainActivity : ComponentActivity() {
         )
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
+//        setContent {
+//            NonStopTheme {
+//                val systemUiController = rememberSystemUiController()
+//                SideEffect {
+//                    systemUiController.setStatusBarColor(
+//                        color = Color.Transparent,
+//                        darkIcons = true
+//                    )
+//                }
+//
+//                App()
+//            }
+//        }
+
+        val oneTapClient = Identity.getSignInClient(this)
+        oneTapClient.signOut()
         setContent {
             NonStopTheme {
-                val systemUiController = rememberSystemUiController()
-                SideEffect {
-                    systemUiController.setStatusBarColor(
-                        color = Color.Transparent,
-                        darkIcons = true
-                    )
-                }
+                val state = rememberOneTapSignInState()
+                Log.d("TEST", "STATE = ${state.state}")
+                OneTapSignInWithGoogle(
+                    state = state,
+                    clientId = "644667237511-tfjgf526riona6cnc2u43pboutv972q8.apps.googleusercontent.com",
+                    onTokenIdReceived = {
+                        Log.d("MainActivity", it)
+//                        state.getAccessToken()
+                    },
+                    onDialogDismissed = {
+                        Log.d("MainActivity", it)
+                    }
+                )
 
-                App()
+                GetAccessToken(
+                    state,
+                    "hisoka.dvp@gmail.com",
+                    arrayOf(
+                        "https://www.googleapis.com/auth/youtube",
+                        "https://www.googleapis.com/auth/youtube.readonly"
+                    ),
+                    onSuccess = {
+
+                    },
+                    onError = {
+
+                    }
+                )
+
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(onClick = { state.signIn() }, enabled = state.state == State.None) {
+                        Text(text = "Sign in")
+                    }
+                }
             }
         }
     }
