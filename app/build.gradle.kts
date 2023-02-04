@@ -40,17 +40,17 @@ android {
         }
     }
 
-    signingConfigs {
-        this.getByName("debug"){
-//            storeFile = rootProject.file("env/debug.key")
-//            keyAlias = "oneapp"
-//            keyPassword = "oneapp"
-//            storePassword = "oneapp"
-
-            storeFile = file("/Users/dvp/.android/debug.keystore")
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-            storePassword = "android"
-        }
-    }
+//    signingConfigs {
+//        this.getByName("debug"){
+////            storeFile = rootProject.file("env/debug.key")
+////            keyAlias = "oneapp"
+////            keyPassword = "oneapp"
+////            storePassword = "oneapp"
+//
+//            storeFile = file("/Users/dvp/.android/debug.keystore")
+//            keyAlias = "androiddebugkey"
+//            keyPassword = "android"
+//            storePassword = "android"
+//        }
+//    }
 }
