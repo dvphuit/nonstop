@@ -14,16 +14,23 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
 rootProject.name = "one"
 include(
     ":app",
+
     ":compose-main:youtube-ui",
     ":compose-main:browser-ui",
     ":compose-main:book-ui",
+
+    ":data:youtube-data",
+
+    ":core",
+
     ":libs:js",
     ":libs:ytube",
     ":libs:browser",
+    ":libs:common",
 )
+
 includeBuild("build-logic")
-include(":libs:compose-se-transition")
-include(":data:youtube-data")

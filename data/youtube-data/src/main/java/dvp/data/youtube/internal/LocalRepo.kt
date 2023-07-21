@@ -1,5 +1,16 @@
 package dvp.data.youtube.internal
 
+import dvp.data.youtube.models.VideoEntity
 
-class LocalRepo {
+
+internal class LocalRepo {
+    var cacheVideos = mutableListOf<VideoEntity>()
+
+    fun init() {
+        this.cacheVideos.clear()
+    }
+
+    fun addVideos(data: List<VideoEntity>) {
+        this.cacheVideos.addAll(data)
+    }
 }

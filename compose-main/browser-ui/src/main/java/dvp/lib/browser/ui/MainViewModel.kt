@@ -6,22 +6,20 @@ import dvp.lib.browser.ui.widgets.topbar.State as BottomBarState
 import dvp.lib.browser.ui.widgets.progress.State as ProgressBarState
 import dvp.lib.browser.ui.widgets.bottombar.ToolbarState
 import dvp.lib.corebrowser.features.BrowserDelegate
-import dvp.lib.corebrowser.features.navigation.BrowserNavigationApi
-import dvp.lib.corebrowser.features.navigation.BrowserNavigationListener
-import dvp.lib.corebrowser.features.utils.URLUtils
-import dvp.lib.corebrowser.features.utils.URLUtilsImpl
+import dvp.lib.corebrowser.features.navigation.IAction
+import dvp.lib.corebrowser.features.navigation.INavigationListener
+import dvp.lib.corebrowser.features.utils.UrlUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 internal class MainViewModel(
-    private val navigationApi: BrowserNavigationApi,
-    private val urlUtils: URLUtils = URLUtilsImpl(),
+    private val navigationApi: IAction,
     initialToolbarState: ToolbarState = ToolbarState(),
     initialProgressState: ProgressBarState = ProgressBarState(),
     initialBottomBarState: BottomBarState = BottomBarState(),
-) : ViewModel(), BrowserNavigationListener {
+) : ViewModel(), INavigationListener {
 
     private val _toolbarViewState = MutableStateFlow(initialToolbarState)
     val toolbarViewState: StateFlow<ToolbarState> = _toolbarViewState.asStateFlow()
@@ -119,7 +117,7 @@ internal class MainViewModel(
     }
 
     private fun updateDisplayUrl(potentialUrl: String) {
-        val isValidUrl = urlUtils.isValidUrl(potentialUrl)
+        val isValidUrl = UrlUtils.isValidUrl(potentialUrl)
         val (simpleUrl, isSafeUrl) = parseUrl(potentialUrl)
 
         val displayText = when {
@@ -141,6 +139,6 @@ internal class MainViewModel(
     }
 
     private fun parseUrl(url: String): Pair<String, Boolean> {
-        return urlUtils.getDisplayUrl(url) to url.contains("https")
+        return UrlUtils.getDisplayUrl(url) to url.contains("https")
     }
 }

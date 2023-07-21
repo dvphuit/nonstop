@@ -4,7 +4,7 @@ configure<BaseExtension> {
     compileSdkVersion(33)
 
     defaultConfig {
-        minSdk = 23
+        minSdk = 26
         targetSdk = 33
     }
 
@@ -23,4 +23,15 @@ configure<BaseExtension> {
         }
     }
 
+}
+
+configurations.all {
+    resolutionStrategy {
+        this.enableDependencyVerification()
+        eachDependency {
+            when (requested.module.toString()) {
+                "androidx.lifecycle:lifecycle-common" -> useVersion("2.6.1")
+            }
+        }
+    }
 }

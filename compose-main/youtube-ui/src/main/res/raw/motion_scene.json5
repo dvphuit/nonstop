@@ -1,52 +1,108 @@
 {
   ConstraintSets: {
     start: {
-      profile_pic: {
+      video_list: {
+        width: 'spread',
+        height: 'spread',
+        top: ['parent', 'top'],
+        bottom: ['parent', 'bottom'],
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        alpha: 0,
+        translationY: 0,
+        scaleX: 0.98,
+        scaleY: 0.98,
+      },
+      box: {
+        width: 'parent',
+        height: 250,
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+        top: ['parent', 'top'],
+      },
+      video_view: {
+        width: 'spread',
+        height: 'spread',
+        bottom: ['box', 'bottom'],
+        top: ['parent', 'top'],
+        start: ['parent', 'start'],
+        end: ['parent', 'end'],
+      },
+      title: {
+        width: 'spread',
+        height: 'spread',
+        alpha: 0,
+        start: ['parent', 'start', 144],
+        end: ['parent', 'end', 0],
+        bottom: ['box', 'bottom'],
+        top: ['box', 'top'],
+      },
+      close: {
         width: 40,
         height: 40,
-        start: ['parent', 'start', 16],
-        top: ['parent', 'top', 16],
-        custom: {
-          background: '#08ff04'
-        }
+        end: ['parent', 'end', 4],
+        bottom: ['box', 'bottom'],
+        top: ['box', 'top']
       },
-      username: {
-        top: ['profile_pic', 'top'],
-        bottom: ['profile_pic', 'bottom'],
-        start: ['profile_pic', 'end', 16]
-      },
-      box: {
+      video_relative: {
         width: 'spread',
         height: 'spread',
         start: ['parent', 'start'],
         end: ['parent', 'end'],
-        top: ['parent', 'top'],
-        bottom: ['parent', 'bottom', -16],
+        bottom: ['parent', 'bottom'],
+        top: ['box', 'bottom']
       }
     },
+
+    // collapsed
     end: {
-      profile_pic: {
-        width: 150,
-        height: 150,
+      video_list: {
+        width: 'spread',
+        height: 'spread',
+        top: ['parent', 'top'],
+        bottom: ['parent', 'bottom'],
         start: ['parent', 'start'],
         end: ['parent', 'end'],
-        top: ['parent', 'top', 16],
-        custom: {
-          background: '#FFFFFF'
-        }
+        translationY: 100,
+        alpha: 1,
       },
-      username: {
-        top: ['profile_pic', 'bottom', 16],
+      box : {
+        width: 'spread',
+        height: 80,
+        start: ['parent', 'start'],
         end: ['parent', 'end'],
-        start: ['parent', 'start']
+        bottom: ['parent', 'bottom'],
       },
-      box: {
+      video_view: {
+        width: 140,
+        height: 80,
+        top: ['box', 'top'],
+        start: ['box', 'start'],
+        bottom: ['box', 'bottom'],
+      },
+
+      title: {
+        width: 'spread',
+        height: 'spread',
+        start: ['parent', 'start', 144],
+        end: ['parent', 'end', 44],
+        bottom: ['box', 'bottom'],
+        top: ['box', 'top'],
+      },
+      close: {
+        width: 40,
+        height: 40,
+        end: ['parent', 'end', 4],
+        bottom: ['box', 'bottom'],
+        top: ['box', 'top'],
+      },
+      video_relative: {
         width: 'spread',
         height: 'spread',
         start: ['parent', 'start'],
         end: ['parent', 'end'],
-        top: ['parent', 'top'],
-        bottom: ['parent', 'bottom', -16],
+        bottom: ['parent', 'bottom'],
+        top: ['box', 'bottom']
       }
     }
   },
@@ -56,17 +112,49 @@
       to: 'end',
       pathMotionArc: 'startHorizontal',
       KeyFrames: {
-        KeyAttributes: [
+        KeyPositions: [
           {
-            target: ['profile_pic'],
-            frames: [0, 100]
+            target: ['video_view'],
+            frames: [90],
+            percentWidth: [0],
+            percentX: [0]
           },
-          {
-            target: ['username'],
-            frames: [0, 50, 100],
-            translationX: [0, 70, 0],
-          }
+        ],
+
+        //not working in 1.1.0 alpha 04
+        KeyAttributes: [
+//          {
+//            target: ['video_list'],
+//            frames: [0, 100],
+//            translationY: [-100, 0],
+//            alpha: [0, 1],
+//          },
+//          {
+//            target: ['title'],
+//            frames: [95],
+//            translationX: [10000],
+//            alpha: [0],
+//          },
+//          {
+//            target: ['close'],
+//            frames: [90],
+//            translationX: [10000],
+//            alpha: [0],
+//          }
         ]
+      },
+      onSwipe: {
+        anchor: 'box',
+        mode: 'spring',
+        touchUp: 'autocomplete',
+        side: 'bottom',
+        scale: 1.0,
+        maxVelocity : 4.0,
+        maxAccel : 1.2,
+        springMass : 0.1,
+        springStiffness : 200,
+        springDamping : 10,
+        stopThreshold : 0.001,
       }
     }
   }

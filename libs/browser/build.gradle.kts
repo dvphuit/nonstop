@@ -5,3 +5,6 @@ plugins {
 dependencies {
     implementation(libs.androidx.core.ktx)
 }
+android {
+    namespace = "dvp.lib.corebrowser"
+}

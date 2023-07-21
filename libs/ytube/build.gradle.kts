@@ -3,6 +3,10 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+android {
+    namespace = "dvp.lib.ytube"
+}
+
 dependencies {
     implementation(libs.ktor.core)
     implementation(libs.ktor.cio)
@@ -10,6 +14,7 @@ dependencies {
     implementation(libs.ktor.auth)
     implementation(libs.ktor.serializationJson)
     api(libs.ktor.serialization)
+    implementation(libs.krypto)
     implementation(project(":libs:js"))
     testImplementation(libs.junit)
 }

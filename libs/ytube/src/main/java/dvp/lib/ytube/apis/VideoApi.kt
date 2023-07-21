@@ -1,37 +1,37 @@
 package dvp.lib.ytube.apis
 
-import dvp.lib.ytube.apis.BaseApi
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.util.*
 
-class VideoApi : BaseApi() {
-    override val root: String
-        get() = "videos"
+class VideoApi {
+
+    private val client = YoutubeApiClient("videos")
+
+    fun setToken(token: String){
+        client.setToken(token)
+    }
 
     suspend fun list(): HttpResponse {
-        setToken("")
         val params = valuesOf(
             Pair("part", listOf("snippet", "contentDetails", "statistics")),
             Pair("chart", listOf("mostPopular")),
             Pair("maxResults", listOf("10")),
             Pair("regionCode", listOf("VN")),
         )
-        return get(root, params)
+        return client.get(params = params)
     }
 
     //like, dislike, none
     suspend fun rating(value: String): Boolean {
-        setToken("")
         val params = valuesOf(
             Pair("rating", listOf(value)),
         )
-        return post("rating".byRoot, params).status == HttpStatusCode.NoContent
+        return client.post("rating", params).status == HttpStatusCode.NoContent
     }
 
     suspend fun getRating(videoId: String): String {
-        setToken("")
         val params = valuesOf("id", listOf(videoId))
-        return get("getRating".byRoot, params).bodyAsText()
+        return client.get("getRating", params).bodyAsText()
     }
 }

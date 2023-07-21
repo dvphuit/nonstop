@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.webkit.WebSettings
 import android.webkit.WebView
 import dvp.lib.corebrowser.features.BrowserDelegate
-import dvp.lib.corebrowser.features.navigation.BrowserNavigationListener
+import dvp.lib.corebrowser.features.navigation.INavigationListener
 
 @SuppressLint("SetJavaScriptEnabled")
 class CoreWebView @JvmOverloads constructor(
@@ -17,7 +17,6 @@ class CoreWebView @JvmOverloads constructor(
 
     private val browserChromeClient = CoreChromeClient()
     private val coreWebViewClient = CoreWebViewClient()
-
     init {
         runCatching {
             with(settings) {
@@ -39,7 +38,7 @@ class CoreWebView @JvmOverloads constructor(
     override fun delegateStop() = stopLoading()
     override fun delegateForward() = goForward()
     override fun delegateBack() = goBack()
-    override fun setNavigationListener(navigationListener: BrowserNavigationListener) {
+    override fun setNavigationListener(navigationListener: INavigationListener) {
         coreWebViewClient.setBrowserNavigationListener(navigationListener)
         browserChromeClient.setBrowserNavigationListener(navigationListener)
     }

@@ -6,3 +6,6 @@ plugins {
 dependencies {
     implementation(libs.quickJs)
 }
+android {
+    namespace = "dvp.lib.jsengine"
+}

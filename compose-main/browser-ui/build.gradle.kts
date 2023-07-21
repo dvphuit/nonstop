@@ -8,7 +8,7 @@ dependencies {
     implementation(libs.compose.activity)
     implementation(libs.compose.ui)
     implementation(libs.compose.material)
-    implementation(libs.compose.ui.tooling)
+//    implementation(libs.compose.ui.tooling)
     implementation(libs.compose.constraintlayout)
     implementation(libs.androidx.lifecycle.viewmodelKtx)
 
@@ -17,5 +17,9 @@ dependencies {
     implementation(libs.accompanist.insets)
     implementation(libs.accompanist.insets.ui)
     implementation(libs.accompanist.navigation.animation)
-    implementation(project(":libs:compose-se-transition"))
+
+//    debugImplementation(libs.compose.ui.tooling)
+}
+android {
+    namespace = "dvp.lib.browser"
 }

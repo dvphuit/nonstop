@@ -64,7 +64,7 @@ fun BrowserUI() {
         }
     }
 
-    Scaffold() {
+    Scaffold {
         val progress = min(1f, (keyboardState.height.toFloat() / keyboardState.maxHeight))
         val modifier = Modifier
         MotionLayout(
@@ -94,7 +94,7 @@ fun BrowserRecent() {
         verticalArrangement = Arrangement.Center
     ) {
         List(30) {
-            ListItem() {
+            ListItem {
                 Text(text = "Item $it")
             }
         }

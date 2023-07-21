@@ -1,11 +1,11 @@
 package dvp.lib.browser
 
-import dvp.lib.corebrowser.features.navigation.BrowserNavigationApi
-import dvp.lib.corebrowser.features.navigation.ComposeBrowserNavigationApi
+import dvp.lib.corebrowser.features.navigation.IAction
+import dvp.lib.corebrowser.features.navigation.Navigation
 
 class Controller internal constructor(
-    private val navigationApi: BrowserNavigationApi,
-) : BrowserNavigationApi by navigationApi {
+    private val navigationApi: IAction,
+) : IAction by navigationApi {
 
     companion object {
         private lateinit var instance: Controller
@@ -13,7 +13,7 @@ class Controller internal constructor(
         @Synchronized
         fun getInstance(): Controller {
             if (!this::instance.isInitialized) {
-                instance = Controller(navigationApi = ComposeBrowserNavigationApi())
+                instance = Controller(navigationApi = Navigation())
             }
             return instance
         }

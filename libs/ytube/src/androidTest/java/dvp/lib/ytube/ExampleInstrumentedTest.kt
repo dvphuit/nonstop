@@ -26,7 +26,7 @@ class ExampleInstrumentedTest {
     @Test
     fun urlTest(){
         runBlocking {
-            val info = YtExtractor().getBasicInfo("xsPcMO9CRBE")
+            val info = YtClient().getBasicInfo("xsPcMO9CRBE")
             println(info)
         }
     }

@@ -1,21 +1,28 @@
 plugins {
     id("android-lib-compose")
+    id("kotlin-parcelize")
+}
+
+android {
+    namespace = "dvp.ui.youtube"
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.compose.activity)
-    implementation(libs.compose.ui)
-    implementation(libs.compose.material)
-    implementation(libs.compose.ui.tooling)
-    implementation(libs.compose.constraintlayout)
-    implementation(libs.androidx.lifecycle.viewmodelKtx)
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.composeUi)
+    implementation(libs.bundles.media3)
 
-    implementation(libs.accompanist.pager)
-    implementation(libs.accompanist.systemUi)
-    implementation(libs.accompanist.insets)
-    implementation(libs.accompanist.insets.ui)
-    implementation(libs.accompanist.navigation.animation)
-
+    implementation(libs.coil)
+    implementation(libs.bundles.koin)
+    implementation(projects.core)
     api(projects.data.youtubeData)
+    implementation(projects.libs.common)
+
+    implementation("com.bumble.appyx:core:1.2.0")
+    implementation("androidx.legacy:legacy-support-v4:1.0.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-service:2.6.1")
+    debugImplementation(libs.compose.ui.tooling)
 }

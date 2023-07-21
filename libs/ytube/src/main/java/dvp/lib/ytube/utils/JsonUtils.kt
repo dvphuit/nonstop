@@ -1,14 +1,9 @@
 package dvp.lib.ytube.utils
 
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 internal object JsonUtils {
-    private val jsonBuilder = Json {
-        this.isLenient = true
-        this.prettyPrint = false
-    }
 
     fun String.findJson(
         source: String,
@@ -16,7 +11,7 @@ internal object JsonUtils {
         left: Any,
         right: String,
         prepend: String
-    ): JsonElement {
+    ): String {
         val jsonStr = this.between(left, right)
 
         if (jsonStr.isEmpty()) {
@@ -26,11 +21,9 @@ internal object JsonUtils {
         return (prepend + jsonStr).toJson(source, varname)
     }
 
-    private fun String.toJson(source: String, varname: String): JsonElement {
+    private fun String.toJson(source: String, varname: String): String {
         try {
-            return jsonBuilder.parseToJsonElement(
-                this.cutAfterJSON().replace(Regex("^[)\\]}'\\s]+"), "")
-            )
+            return this.cutAfterJSON().replace(Regex("^[)\\]}'\\s]+"), "")
         } catch (e: Exception) {
             error("Error parsing $varname in ${source}: ${e.message}")
         }
@@ -81,7 +74,7 @@ internal object JsonUtils {
             start = match.range.last + 1
         }
         if (left is String) {
-            start = this.indexOf(left);
+            start = this.indexOf(left)
             if (start == -1) return ""
             start += left.length
         }
