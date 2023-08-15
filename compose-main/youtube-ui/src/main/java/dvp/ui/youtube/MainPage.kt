@@ -7,8 +7,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import dvp.data.youtube.viewmodel.YoutubeEvent
-import dvp.data.youtube.viewmodel.UTubeViewModel
+import dvp.data.youtube.viewmodel.MainEvent
+import dvp.data.youtube.viewmodel.MainViewModel
 import dvp.lib.core.viewmodel.BaseViewState
 import dvp.ui.youtube.common.EmptyView
 import dvp.ui.youtube.common.ErrorView
@@ -17,7 +17,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @androidx.media3.common.util.UnstableApi
 @Composable
-fun  MainPage(vm: UTubeViewModel = koinViewModel()) {
+fun  MainPage(vm: MainViewModel = koinViewModel()) {
     val uiState by vm.uiState.collectAsState()
 
     Box(
@@ -29,16 +29,12 @@ fun  MainPage(vm: UTubeViewModel = koinViewModel()) {
                 is BaseViewState.Error -> ErrorView(
                     e = vm.getError(),
                     action = {
-                        vm.submit(YoutubeEvent.LoadVideos)
+                        vm.submit(MainEvent.LoadVideos)
                     }
                 )
 
                 is BaseViewState.Loading -> LoadingView()
             }
-
-            LaunchedEffect(key1 = this, block = {
-                vm.submit(YoutubeEvent.LoadVideos)
-            })
         }
     )
 }

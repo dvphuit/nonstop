@@ -15,7 +15,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.bundles.koin)
     implementation(projects.core)
-    api(projects.data.youtubeData)
+    api(projects.data.utubeData)
     implementation(projects.libs.common)
 
     implementation("com.bumble.appyx:core:1.2.0")

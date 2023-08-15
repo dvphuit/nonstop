@@ -22,8 +22,8 @@ import dvp.data.youtube.models.StreamingData
 import dvp.data.youtube.models.ThumbnailEntity
 import dvp.data.youtube.models.VideoEntity
 import dvp.data.youtube.models.VideoFormat
-import dvp.data.youtube.viewmodel.YoutubeEvent
-import dvp.data.youtube.viewmodel.UTubeViewModel
+import dvp.data.youtube.viewmodel.MainEvent
+import dvp.data.youtube.viewmodel.MainViewModel
 import dvp.lib.common.extension.cast
 import dvp.lib.core.viewmodel.BaseViewState
 import dvp.ui.youtube.common.OnLifecycleEvent
@@ -55,7 +55,7 @@ fun YoutubeRouter(context: Context) {
 @androidx.media3.common.util.UnstableApi
 @Composable
 fun TestVideoPlayer() {
-    val uTubeViewModel: UTubeViewModel = koinViewModel()
+    val uTubeViewModel: MainViewModel = koinViewModel()
     val mediaViewModel: MediaViewModel = koinViewModel()
     val state by mediaViewModel.uiState.collectAsState()
     val youtubeState by uTubeViewModel.uiState.collectAsState()
@@ -86,7 +86,7 @@ fun TestVideoPlayer() {
                     .height(200.dp)
             ) {
                 Modifier.VideoView(
-                    state = youtubeState.getData().cast()
+                    video = youtubeState.getData().cast()
                 )
             }
             when (state) {
@@ -105,7 +105,7 @@ fun TestVideoPlayer() {
                         }
 
                         Button(onClick = {
-                            uTubeViewModel.submit(YoutubeEvent.SetVideo(null))
+                            uTubeViewModel.submit(MainEvent.SetVideo(null))
                         }) {
                             Text(text = "Stop")
                         }
@@ -119,7 +119,7 @@ fun TestVideoPlayer() {
             Button(
                 modifier = Modifier.align(Alignment.Center),
                 onClick = {
-                    uTubeViewModel.submit(YoutubeEvent.SetVideo(video))
+                    uTubeViewModel.submit(MainEvent.SetVideo(video))
                 }) {
                 Text(text = "Start")
             }

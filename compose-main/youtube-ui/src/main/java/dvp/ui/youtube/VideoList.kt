@@ -43,9 +43,9 @@ import androidx.constraintlayout.compose.layoutId
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import dvp.data.youtube.models.VideoEntity
-import dvp.data.youtube.viewmodel.YoutubeEvent
+import dvp.data.youtube.viewmodel.MainEvent
 import dvp.data.youtube.viewmodel.YoutubeState
-import dvp.data.youtube.viewmodel.UTubeViewModel
+import dvp.data.youtube.viewmodel.MainViewModel
 import dvp.lib.core.debug.text30
 import dvp.lib.core.debug.text5
 import dvp.ui.youtube.common.rememberFlowWithLifecycle
@@ -55,7 +55,7 @@ import kotlin.math.min
 
 @androidx.media3.common.util.UnstableApi
 @Composable
-internal fun YoutubeMainView(main: UTubeViewModel) {
+internal fun YoutubeMainView(main: MainViewModel) {
     val state = main.getData()
     YoutubeMotionContainer(
         state = state,
@@ -64,11 +64,11 @@ internal fun YoutubeMainView(main: UTubeViewModel) {
                 state = state,
                 onItemClicked = { video ->
                     onVideoClicked.invoke()
-                    main.submit(YoutubeEvent.SetVideo(video))
+                    main.submit(MainEvent.SetVideo(video))
                 })
         },
         videoView = {
-            VideoView(state = state)
+            VideoView(video = state.openingVideo)
         },
         titleView = {
             Box(
@@ -78,17 +78,13 @@ internal fun YoutubeMainView(main: UTubeViewModel) {
             }
         },
         videoRelativeView = {
-            Box(
-                modifier = this
-            ) {
-                Text(text = text30)
-            }
+            VideoRelatedView(video = state.openingVideo)
         },
         closeButton = { onCloseClicked ->
             Box(modifier = this
                 .clickable {
                     onCloseClicked.invoke()
-                    main.submit(YoutubeEvent.SetVideo(null))
+                    main.submit(MainEvent.SetVideo(null))
                 }
                 .background(Color.Black)
             )
@@ -153,11 +149,11 @@ internal inline fun YoutubeMotionContainer(
 
     val closeAnim by animateDpAsState(
         targetValue = if (noVideo) 80.dp else 0.dp,
-        animationSpec = tween(500, easing = EaseOutExpo),
+        animationSpec = tween(500, easing = EaseOutExpo), label = "closeAnim",
     )
     val alphaAnim by animateFloatAsState(
         targetValue = if (noVideo) 0f else 1f,
-        animationSpec = tween(500, easing = EaseOutExpo)
+        animationSpec = tween(500, easing = EaseOutExpo), label = "alphaAnim"
     )
 
     val density = LocalDensity.current
@@ -180,7 +176,10 @@ internal inline fun YoutubeMotionContainer(
         modifier = Modifier
     ) {
 
-        videoListView.invoke(Modifier.layoutId("video_list").fillMaxSize()) {
+        videoListView.invoke(
+            Modifier
+                .layoutId("video_list")
+                .fillMaxSize()) {
             scope.launch {
                 if (swipeState.currentValue == 0) {
                     swipeState.animateTo(1)

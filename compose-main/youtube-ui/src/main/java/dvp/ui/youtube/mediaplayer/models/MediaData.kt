@@ -1,8 +1,8 @@
 package dvp.ui.youtube.mediaplayer.models
 
 import android.os.Parcelable
-import dvp.data.youtube.models.StreamingData
 import dvp.data.youtube.models.VideoEntity
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 
@@ -11,18 +11,26 @@ data class MediaData(
     val videoId: String,
     val artWork: String? = null,
     val author: String,
-    val name: String,
-    val videoUrl: String,
-    val audioUrl: String
-): Parcelable {
+    val title: String,
+    var videoUrl: String,
+    var audioUrl: String,
+) : Parcelable {
+
+    @IgnoredOnParcel
+    lateinit var instance: VideoEntity
+
+    fun hasStream() = videoUrl.isNotEmpty() && audioUrl.isNotEmpty()
+
     companion object {
-        fun fromVideoStreaming(video: VideoEntity, stream: StreamingData) = MediaData(
+        fun fromVideoStreaming(video: VideoEntity) = MediaData(
             videoId = video.id,
             artWork = video.getThumbnailUrl(),
             author = video.channel?.name ?: "",
-            name = video.title,
-            videoUrl = stream.getVideo().url,
-            audioUrl = stream.getAudio().url
-        )
+            title = video.title,
+            videoUrl = video.streamingData?.getVideo()?.url.orEmpty(),
+            audioUrl = video.streamingData?.getAudio()?.url.orEmpty(),
+        ).apply {
+            instance = video
+        }
     }
 }

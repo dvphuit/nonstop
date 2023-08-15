@@ -90,6 +90,7 @@ internal class PlayerNotificationManager internal constructor(
     private var mediaSessionToken: MediaSessionCompat.Token? = null
     private var usePreviousAction: Boolean
     private var useNextAction: Boolean
+    private var forceNext: Boolean
     private var usePreviousActionInCompactView = false
     private var useNextActionInCompactView = false
     private var useRewindAction: Boolean
@@ -130,6 +131,7 @@ internal class PlayerNotificationManager internal constructor(
         intentFilter = IntentFilter()
         usePreviousAction = true
         useNextAction = true
+        forceNext = false
         usePlayPauseActions = true
         useRewindAction = true
         useFastForwardAction = true
@@ -187,6 +189,13 @@ internal class PlayerNotificationManager internal constructor(
     fun setUseNextAction(useNextAction: Boolean) {
         if (this.useNextAction != useNextAction) {
             this.useNextAction = useNextAction
+            invalidate()
+        }
+    }
+
+    fun setForceNextAction(forceNext: Boolean){
+        if (this.forceNext != forceNext) {
+            this.forceNext = forceNext
             invalidate()
         }
     }
@@ -491,7 +500,7 @@ internal class PlayerNotificationManager internal constructor(
         if (useFastForwardAction && enableFastForward) {
             stringActions.add(ACTION_FAST_FORWARD)
         }
-        if (useNextAction && enableNext) {
+        if ((useNextAction && enableNext) || forceNext) {
             stringActions.add(ACTION_NEXT)
         }
         if (customActionReceiver != null) {

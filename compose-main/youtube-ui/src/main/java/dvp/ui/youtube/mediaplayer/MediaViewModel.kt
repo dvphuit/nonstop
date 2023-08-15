@@ -17,11 +17,8 @@ import dvp.lib.core.viewmodel.MviViewModel
 import dvp.ui.youtube.mediaplayer.models.MediaData
 import dvp.ui.youtube.mediaplayer.models.MediaState
 import dvp.ui.youtube.mediaplayer.models.PlayerEvent
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 
 
 @androidx.annotation.OptIn(UnstableApi::class)
@@ -31,11 +28,12 @@ class MediaViewModel(
     Player.Listener,
     TransferListener {
 
+
     private val factory = ProgressiveMediaSource.Factory(
         DefaultHttpDataSource.Factory()
             .apply {
                 this.setTransferListener(this@MediaViewModel)
-            }
+            },
     )
 
     private var progressUpdater: Job? = null
@@ -48,6 +46,11 @@ class MediaViewModel(
             videoScalingMode = C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING
             repeatMode = Player.REPEAT_MODE_ONE
         }
+
+        QueueHelper.registerRelatedVideosChanged {
+            updatePlaylist(it)
+        }
+        println("TEST: mediaViewModel created $this")
     }
 
     override fun submit(event: PlayerEvent) {
@@ -75,7 +78,7 @@ class MediaViewModel(
 
             PlayerEvent.Background -> background()
             PlayerEvent.Foreground -> foreground()
-
+            is PlayerEvent.SetPlaylist -> updatePlaylist(event.media)
             is PlayerEvent.UpdateProgress -> player.seekTo((player.duration * event.newProgress).toLong())
         }
     }
@@ -85,28 +88,46 @@ class MediaViewModel(
         setData { MediaState() }
         if (media == null) return
 
+
+        QueueHelper.set(media)
+
+        player.run {
+            setMediaSource(buildMediaItem(media))
+            prepare()
+            playWhenReady = true
+        }
+    }
+
+    private fun updatePlaylist(playList: List<MediaData>) {
+        if (playList.isEmpty()) return
+        safeLaunch {
+            playList.take(2).forEach {
+                val mediaData = QueueHelper.getStreamingData(it.videoId)
+                println("TEST: update playList -> item = ${mediaData.title}")
+                val source = mediaData.run(::buildMediaItem)
+                player.addMediaSource(source)
+            }
+        }
+    }
+
+    private fun buildMediaItem(data: MediaData): MergingMediaSource {
         val metadata = MediaMetadata.Builder()
-            .setFolderType(MediaMetadata.FOLDER_TYPE_ALBUMS)
-            .setArtworkUri(Uri.parse(media.artWork))
-            .setAlbumTitle(media.author)
-            .setDisplayTitle(media.name)
+            .setArtworkUri(Uri.parse(data.artWork))
+            .setAlbumTitle(data.author)
+            .setDisplayTitle(data.title)
             .build()
 
         val videoSrc = factory.createMediaSource(
-            MediaItem.Builder().setUri(media.videoUrl).build()
+            MediaItem.Builder().setUri(data.videoUrl).build()
         )
 
         val audioItem = MediaItem.Builder()
-            .setUri(media.audioUrl)
+            .setUri(data.audioUrl)
             .setMediaMetadata(metadata)
             .build()
         val audioSrc = factory.createMediaSource(audioItem)
 
-        player.run {
-            setMediaSource(MergingMediaSource(audioSrc, videoSrc))
-            prepare()
-            playWhenReady = true
-        }
+        return MergingMediaSource(audioSrc, videoSrc)
     }
 
     private fun background() {
@@ -156,7 +177,17 @@ class MediaViewModel(
         } else {
             stopProgressUpdate()
         }
+    }
 
+
+    override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
+        println("TEST: MediaViewModel -> onMediaItemTransition: reason=$reason, title=${mediaItem?.mediaMetadata?.displayTitle}")
+        safeLaunch {
+            QueueHelper.fetchNextStreams(player.currentMediaItemIndex)?.let {
+                val source = buildMediaItem(it)
+                player.addMediaSource(source)
+            }
+        }
     }
 
     private fun startProgressUpdate() = safeLaunch {
@@ -198,19 +229,5 @@ class MediaViewModel(
     }
 
     override fun onTransferEnd(source: DataSource, dataSpec: DataSpec, isNetwork: Boolean) {
-    }
-}
-
-private fun CoroutineScope.launchPeriodicAsync(
-    repeatMillis: Long,
-    action: () -> Unit
-) = this.async {
-    if (repeatMillis > 0) {
-        while (isActive) {
-            action()
-            delay(repeatMillis)
-        }
-    } else {
-        action()
     }
 }

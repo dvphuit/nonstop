@@ -11,4 +11,5 @@ data class MediaState(
     val surfaceType: SurfaceType = SurfaceType.SurfaceView,
     val bps: Float = 0.0f,
     val isServiceRunning: Boolean = false,
+    val playlist: List<MediaData> = emptyList()
 )

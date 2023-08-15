@@ -17,8 +17,7 @@ import androidx.core.content.IntentCompat
 import androidx.lifecycle.LifecycleService
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
-import dvp.data.youtube.viewmodel.UTubeViewModel
-import dvp.data.youtube.viewmodel.YoutubeEvent
+import dvp.data.youtube.viewmodel.MainViewModel
 import dvp.ui.youtube.mediaplayer.models.MediaData
 import dvp.ui.youtube.mediaplayer.service.notification.Const
 import dvp.ui.youtube.mediaplayer.service.notification.NotificationBuilder
@@ -35,8 +34,6 @@ internal class OnlinePlayerService : LifecycleService() {
     private val mainActivity : Class<Activity> = get(named("mainActivity"))
     private val binder = LocalBinder()
     private lateinit var notification: PlayerNotificationManager
-
-    private val uTubeViewModel: UTubeViewModel by inject()
 
 
     override fun onCreate() {
@@ -96,6 +93,7 @@ internal class OnlinePlayerService : LifecycleService() {
 
                 this.setUsePreviousAction(true)
                 this.setUseNextAction(true)
+//                this.setForceNextAction(true)
 
                 this.setUseNextActionInCompactView(true)
             }

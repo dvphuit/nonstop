@@ -23,12 +23,12 @@ include(
     ":compose-main:browser-ui",
     ":compose-main:book-ui",
 
-    ":data:youtube-data",
+    ":data:utube-data",
 
     ":core",
 
     ":libs:js",
-    ":libs:ytube",
+    ":libs:uclient",
     ":libs:browser",
     ":libs:common",
 )

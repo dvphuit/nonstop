@@ -18,9 +18,12 @@ import androidx.compose.ui.zIndex
 import androidx.media3.common.Player
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import dvp.data.youtube.viewmodel.YoutubeEvent
+import dvp.data.youtube.models.VideoEntity
+import dvp.data.youtube.viewmodel.DetailEvent
+import dvp.data.youtube.viewmodel.DetailViewModel
+import dvp.data.youtube.viewmodel.MainEvent
 import dvp.data.youtube.viewmodel.YoutubeState
-import dvp.data.youtube.viewmodel.UTubeViewModel
+import dvp.data.youtube.viewmodel.MainViewModel
 import dvp.lib.core.viewmodel.BaseViewState
 import dvp.ui.youtube.common.EmptyView
 import dvp.ui.youtube.common.ErrorView
@@ -34,32 +37,30 @@ import org.koin.androidx.compose.koinViewModel
 
 @androidx.media3.common.util.UnstableApi
 @Composable
-internal fun Modifier.VideoView(state: YoutubeState) {
+internal fun Modifier.VideoView(video: VideoEntity?) {
     val context = LocalContext.current
-
-    val video = state.openingVideo
-//    println("TEST: videoView = $video")
     val mediaViewModel: MediaViewModel = koinViewModel()
 
     if (video == null) {
-        LaunchedEffect(key1 = state) {
+        LaunchedEffect(key1 = "stop") {
             mediaViewModel.submit(PlayerEvent.Stop)
             OnlinePlayerService.stop(context)
         }
         return
     }
 
-    val mainViewModel: UTubeViewModel = koinViewModel()
+    val mainViewModel: MainViewModel = koinViewModel()
+
     video.streamingData?.let {
         LaunchedEffect(key1 = video.id) {
-            val initData = MediaData.fromVideoStreaming(video, it)
-
+            val initData = MediaData.fromVideoStreaming(video)
             mediaViewModel.submit(PlayerEvent.Init(initData))
+
             OnlinePlayerService.start(
                 context = context,
                 initData = initData,
                 onStopByNotification = {
-                    mainViewModel.submit(YoutubeEvent.SetVideo(null))
+                    mainViewModel.submit(MainEvent.SetVideo(null))
                 })
         }
     }
@@ -68,7 +69,11 @@ internal fun Modifier.VideoView(state: YoutubeState) {
 
     when (mediaState) {
         is BaseViewState.Ready -> {
-            VideoSurface(player = mediaViewModel.player, surfaceType = mediaViewModel.getData().surfaceType, modifier = this)
+            VideoSurface(
+                modifier = this,
+                player = mediaViewModel.player,
+                surfaceType = mediaViewModel.getData().surfaceType,
+            )
         }
 
         is BaseViewState.Loading -> AsyncImage(
