@@ -10,14 +10,22 @@ import androidx.lifecycle.LifecycleOwner
 
 
 @Composable
-fun OnResumeStopEvent(onResume: ()->Unit, onStop: ()->Unit){
-    OnLifecycleEvent{ owner, event ->  
-        
+fun AppStateHandler(onBackground: () -> Unit, onForeground: () -> Unit) = OnLifecycleEvent(onEvent = { _, event ->
+    when (event) {
+        Lifecycle.Event.ON_RESUME -> {
+            onForeground.invoke()
+        }
+
+        Lifecycle.Event.ON_STOP -> {
+            onBackground.invoke()
+        }
+
+        else -> {}
     }
-}
+})
 
 @Composable
-fun OnLifecycleEvent(onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) -> Unit) {
+internal fun OnLifecycleEvent(onEvent: (owner: LifecycleOwner, event: Lifecycle.Event) -> Unit) {
     val eventHandler = rememberUpdatedState(onEvent)
     val lifecycleOwner = rememberUpdatedState(LocalLifecycleOwner.current)
 

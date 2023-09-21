@@ -11,55 +11,56 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 abstract class MviViewModel<STATE, EVENT> : ViewModel() {
+    private val _uiState = MutableStateFlow<ViewState<STATE>>(ViewState.Empty)
+    val uiState: StateFlow<ViewState<STATE>> = _uiState
 
-    private val _uiState = MutableStateFlow<BaseViewState<*>>(BaseViewState.Empty)
     private val _handler = CoroutineExceptionHandler { _, exception ->
         logE("MviViewModel", exception)
         onError(exception)
     }
 
-    val uiState = _uiState.asStateFlow()
-
 
     abstract fun submit(event: EVENT)
 
     open fun getData(): STATE {
-        if (_uiState.value is BaseViewState.Ready){
-            return _uiState.value.cast<BaseViewState.Ready<STATE>>().value
+        val value = _uiState.value
+        if (value is ViewState.Data) {
+            return value.data
         } else {
             error("state is not ready")
         }
     }
 
     open fun getReady(): STATE? {
-        return if (_uiState.value is BaseViewState.Ready){
-            _uiState.value.cast<BaseViewState.Ready<STATE>>().value
+        val value = _uiState.value
+        return if (value is ViewState.Data) {
+            value.data
         } else {
             null
         }
     }
 
     fun getError(): Throwable {
-        return _uiState.value.cast<BaseViewState.Error>().throwable
+        return _uiState.value.cast<ViewState.Error>().throwable
     }
 
 
     protected fun setData(state: STATE?.() -> STATE?) {
         _uiState.value = when (val current = _uiState.value) {
-            is BaseViewState.Ready -> {
-                BaseViewState.Ready(state.invoke(current.value.cast()))
+            is ViewState.Data -> {
+                ViewState.Data(state.invoke(current.data)!!)
             }
 
             else -> {
-                BaseViewState.Ready(state.invoke(null))
+                ViewState.Data(state.invoke(null)!!)
             }
         }
     }
 
     protected fun updateData(state: STATE.() -> STATE) {
         _uiState.value = when (val current = _uiState.value) {
-            is BaseViewState.Ready -> {
-                BaseViewState.Ready(state.invoke(current.value.cast()))
+            is ViewState.Data -> {
+                ViewState.Data(state.invoke(current.data))
             }
 
             else -> {
@@ -74,15 +75,15 @@ abstract class MviViewModel<STATE, EVENT> : ViewModel() {
     }
 
     protected fun setLoading() {
-        _uiState.value = BaseViewState.Loading
+        _uiState.value = ViewState.Loading
     }
 
     protected fun setEmpty() {
-        _uiState.value = BaseViewState.Empty
+        _uiState.value = ViewState.Empty
     }
 
     open fun onError(exception: Throwable) {
-        _uiState.value = BaseViewState.Error(exception)
+        _uiState.value = ViewState.Error(exception)
     }
 
 

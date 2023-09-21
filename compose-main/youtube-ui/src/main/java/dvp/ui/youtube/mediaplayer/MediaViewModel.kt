@@ -1,6 +1,9 @@
 package dvp.ui.youtube.mediaplayer
 
 import android.net.Uri
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MediaMetadata
@@ -17,9 +20,20 @@ import dvp.lib.core.viewmodel.MviViewModel
 import dvp.ui.youtube.mediaplayer.models.MediaData
 import dvp.ui.youtube.mediaplayer.models.MediaState
 import dvp.ui.youtube.mediaplayer.models.PlayerEvent
+import dvp.ui.youtube.player.QuickSeekAction
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import org.koin.java.KoinJavaComponent.inject
 
+
+enum class VideoPlayerVisibility {
+    Visible, Gone;
+
+    operator fun not() = when (this) {
+        Visible -> Gone
+        Gone -> Visible
+    }
+}
 
 @androidx.annotation.OptIn(UnstableApi::class)
 class MediaViewModel(
@@ -28,13 +42,15 @@ class MediaViewModel(
     Player.Listener,
     TransferListener {
 
+    private val httpDataSource: DefaultHttpDataSource.Factory by inject(DataSource.Factory::class.java)
 
-    private val factory = ProgressiveMediaSource.Factory(
-        DefaultHttpDataSource.Factory()
-            .apply {
+    private val factory: ProgressiveMediaSource.Factory by lazy {
+        ProgressiveMediaSource.Factory(
+            httpDataSource.apply {
                 this.setTransferListener(this@MediaViewModel)
             },
-    )
+        )
+    }
 
     private var progressUpdater: Job? = null
 
@@ -53,46 +69,36 @@ class MediaViewModel(
         println("TEST: mediaViewModel created $this")
     }
 
+
+    var visibility by mutableStateOf(VideoPlayerVisibility.Gone)
+    var quickSeekAction by mutableStateOf(QuickSeekAction.none())
+
     override fun submit(event: PlayerEvent) {
         println("TEST: mediaViewModel event = $event")
         when (event) {
             is PlayerEvent.Init -> setMedia(event.media)
-            PlayerEvent.Backward -> player.seekBack()
-            PlayerEvent.Forward -> player.seekForward()
-            PlayerEvent.PlayPause -> {
-                if (player.isPlaying) {
-                    player.pause()
-                    stopProgressUpdate()
-                } else {
-                    player.play()
-                    startProgressUpdate()
-                }
-
-                updateData { copy(isPlaying = player.isPlaying) }
-            }
-
-            PlayerEvent.Stop -> {
-                setMedia(null)
-                stopProgressUpdate()
-            }
-
+            PlayerEvent.NextVideo -> nextVideo()
+            PlayerEvent.PreVideo -> prevVideo()
+            PlayerEvent.PlayPause -> playPause()
+            PlayerEvent.Stop -> stop()
             PlayerEvent.Background -> background()
             PlayerEvent.Foreground -> foreground()
             is PlayerEvent.SetPlaylist -> updatePlaylist(event.media)
-            is PlayerEvent.UpdateProgress -> player.seekTo((player.duration * event.newProgress).toLong())
+            is PlayerEvent.Seek -> player.seekTo(player.currentPosition + event.nextMs)
         }
     }
 
     private fun setMedia(media: MediaData?) {
         println("TEST: setMedia = $media")
-        setData { MediaState() }
-        if (media == null) return
+        setData { MediaState() } // set init data
 
+        if (media == null) return
 
         QueueHelper.set(media)
 
         player.run {
             setMediaSource(buildMediaItem(media))
+//            this.setMediaItem(MediaItem.fromUri(media.videoUrl))
             prepare()
             playWhenReady = true
         }
@@ -130,6 +136,40 @@ class MediaViewModel(
         return MergingMediaSource(audioSrc, videoSrc)
     }
 
+
+    private fun playPause() {
+        if (player.isPlaying) {
+            player.pause()
+            stopProgressUpdate()
+        } else {
+            player.play()
+            startProgressUpdate()
+        }
+
+        updateData { copy(isPlaying = player.isPlaying) }
+    }
+
+    private fun stop() {
+        setMedia(null)
+        stopProgressUpdate()
+    }
+
+    private fun nextVideo() {
+        if (player.hasNextMediaItem()) {
+            player.seekToNext()
+        } else {
+            println("TEST: has no next video")
+        }
+    }
+
+    private fun prevVideo() {
+        if (player.hasPreviousMediaItem()) {
+            player.seekToPrevious()
+        } else {
+            println("TEST: has no prev video")
+        }
+    }
+
     private fun background() {
         getReady()?.let {
             disableVideo(true)
@@ -156,7 +196,8 @@ class MediaViewModel(
 
             ExoPlayer.STATE_READY -> {
                 println("TEST: onPlaybackStateChanged -> STATE_READY")
-                updateData { copy(duration = player.duration) }
+                progressUpdater = Job()
+                updateData { copy(durationMs = player.duration) }
             }
 
             Player.STATE_ENDED -> {
@@ -196,6 +237,8 @@ class MediaViewModel(
                 updateData {
                     copy(
                         progress = player.currentPosition,
+                        currentMs = player.currentPosition,
+                        bufferedMs = player.bufferedPosition,
                         bps = sumBytesPerSec.toFloat() / 1024
                     )
                 }
@@ -229,5 +272,12 @@ class MediaViewModel(
     }
 
     override fun onTransferEnd(source: DataSource, dataSpec: DataSpec, isNetwork: Boolean) {
+    }
+
+    override fun onAvailableCommandsChanged(availableCommands: Player.Commands) {
+        super.onAvailableCommandsChanged(availableCommands)
+        updateData {
+            this.copy(availableCommands = availableCommands)
+        }
     }
 }

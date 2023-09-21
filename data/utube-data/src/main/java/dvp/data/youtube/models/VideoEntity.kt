@@ -14,7 +14,7 @@ data class VideoEntity(
     var relatedVideos: List<VideoEntity>? = null
 ) {
     fun getThumbnailUrl(): String {
-        return thumbnails.last().url
+        return thumbnails.lastOrNull()?.url ?: ""
     }
 
     fun getVideoUrl(): String? {

@@ -8,6 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -36,18 +37,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.constraintlayout.compose.Dimension
 import androidx.constraintlayout.compose.MotionLayout
 import androidx.constraintlayout.compose.MotionScene
 import androidx.constraintlayout.compose.layoutId
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import dvp.data.youtube.models.ChannelEntity
 import dvp.data.youtube.models.VideoEntity
 import dvp.data.youtube.viewmodel.MainEvent
 import dvp.data.youtube.viewmodel.YoutubeState
-import dvp.data.youtube.viewmodel.MainViewModel
-import dvp.lib.core.debug.text30
 import dvp.lib.core.debug.text5
+import dvp.ui.youtube.alias.OnMainUiEvent
 import dvp.ui.youtube.common.rememberFlowWithLifecycle
 import dvp.ui.youtube.player.VideoView
 import kotlinx.coroutines.launch
@@ -55,20 +57,31 @@ import kotlin.math.min
 
 @androidx.media3.common.util.UnstableApi
 @Composable
-internal fun YoutubeMainView(main: MainViewModel) {
-    val state = main.getData()
+internal fun YoutubeMainView(
+    state: YoutubeState,
+    onMainUiEvent: OnMainUiEvent
+) {
     YoutubeMotionContainer(
         state = state,
         videoListView = { onVideoClicked ->
             VideoListView(
+                modifier = this.zIndex(0f),
                 state = state,
-                onItemClicked = { video ->
+                onVideoClicked = { video ->
                     onVideoClicked.invoke()
-                    main.submit(MainEvent.SetVideo(video))
-                })
+                    onMainUiEvent.invoke(MainEvent.SetVideo(video))
+                },
+                onChannelClicked = {
+                    // todo
+                }
+            )
         },
         videoView = {
-            VideoView(video = state.openingVideo)
+            VideoView(
+                modifier = this.zIndex(3f),
+                video = state.openingVideo,
+                onMainEvent = onMainUiEvent
+            )
         },
         titleView = {
             Box(
@@ -78,13 +91,16 @@ internal fun YoutubeMainView(main: MainViewModel) {
             }
         },
         videoRelativeView = {
-            VideoRelatedView(video = state.openingVideo)
+            VideoRelatedView(
+                modifier = this.zIndex(2f),
+                video = state.openingVideo
+            )
         },
         closeButton = { onCloseClicked ->
             Box(modifier = this
                 .clickable {
                     onCloseClicked.invoke()
-                    main.submit(MainEvent.SetVideo(null))
+                    onMainUiEvent.invoke(MainEvent.SetVideo(null))
                 }
                 .background(Color.Black)
             )
@@ -94,26 +110,24 @@ internal fun YoutubeMainView(main: MainViewModel) {
 
 
 @Composable
-internal fun Modifier.VideoListView(
+internal fun VideoListView(
+    modifier: Modifier,
     state: YoutubeState,
-    onItemClicked: (VideoEntity) -> Unit
+    onVideoClicked: (VideoEntity) -> Unit,
+    onChannelClicked: (ChannelEntity) -> Unit,
 ) {
     val data = rememberFlowWithLifecycle(state.videos).collectAsLazyPagingItems()
-//    println("TEST: videoListView ${data.itemCount}")
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-        modifier = this,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier,
         content = {
             items(data.itemCount) { index ->
                 data[index]?.let {
                     VideoCard(
                         video = it,
-                        onVideoClicked = { video ->
-                            onItemClicked.invoke(video)
-                        },
-                        onChannelClicked = {
-
-                        }
+                        onVideoClicked = onVideoClicked::invoke,
+                        onChannelClicked = onChannelClicked::invoke
                     )
                 }
             }
@@ -172,14 +186,15 @@ internal inline fun YoutubeMotionContainer(
 
     MotionLayout(
         motionScene = youtubeMotionScene(),
-        progress = if(noVideo) 0f else progress.coerceIn(0f, 1f),
+        progress = if (noVideo) 0f else progress.coerceIn(0f, 1f),
         modifier = Modifier
     ) {
 
         videoListView.invoke(
             Modifier
                 .layoutId("video_list")
-                .fillMaxSize()) {
+                .fillMaxSize()
+        ) {
             scope.launch {
                 if (swipeState.currentValue == 0) {
                     swipeState.animateTo(1)

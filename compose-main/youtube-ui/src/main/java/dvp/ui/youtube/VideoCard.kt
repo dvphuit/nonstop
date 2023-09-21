@@ -31,7 +31,8 @@ import dvp.data.youtube.models.VideoEntity
 
 @Composable
 fun VideoCard(
-    video: VideoEntity, onVideoClicked: (VideoEntity) -> Unit,
+    video: VideoEntity,
+    onVideoClicked: (VideoEntity) -> Unit,
     onChannelClicked: (ChannelEntity) -> Unit
 ) {
     val shape = RoundedCornerShape(15.dp)

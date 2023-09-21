@@ -11,13 +11,25 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.Card
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.onPlaced
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import androidx.core.view.WindowCompat
 import com.bumble.appyx.core.integration.NodeHost
@@ -50,7 +62,7 @@ import org.koin.android.ext.android.getKoin
 import java.util.*
 import kotlin.math.absoluteValue
 
-open class BaseActivity: ComponentActivity(), IntegrationPointProvider{
+open class BaseActivity : ComponentActivity(), IntegrationPointProvider {
     override lateinit var appyxIntegrationPoint: ActivityIntegrationPoint
         protected set
 
@@ -84,6 +96,7 @@ open class BaseActivity: ComponentActivity(), IntegrationPointProvider{
         appyxIntegrationPoint.onSaveInstanceState(outState)
     }
 }
+
 class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,6 +122,37 @@ class MainActivity : BaseActivity() {
                 YoutubeRouter(this)
 //                App(context = this)
 //                Web()
+
+
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .background(Color.Red)
+//                ) {
+//
+//                    Box(
+//                        modifier = Modifier
+//                            .height(300.dp)
+//                            .width(300.dp)
+//                            .background(Color.Yellow)
+//
+//                    ){
+//                        Box(
+//                            modifier = Modifier
+//                                .offset(x = 100.dp, y =  250.dp)
+//                                .height(100.dp)
+//                                .width(100.dp)
+//                                .background(Color.Blue)
+//                        )
+//                    }
+//                    Box(
+//                        modifier = Modifier
+//                            .height(200.dp)
+//                            .width(200.dp)
+//                            .background(Color.Green)
+//                    )
+//
+//                }
             }
         }
 
@@ -208,7 +252,7 @@ class MyWebClient : AccompanistWebViewClient() {
     }
 
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-        if(isYoutubeLoaded){
+        if (isYoutubeLoaded) {
             return true
         }
         return super.shouldOverrideUrlLoading(view, request)

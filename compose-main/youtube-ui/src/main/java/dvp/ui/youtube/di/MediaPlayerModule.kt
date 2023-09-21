@@ -6,9 +6,15 @@ import androidx.core.app.PendingIntentCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultDataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.session.MediaSession
 import dvp.ui.youtube.mediaplayer.MediaViewModel
+import dvp.ui.youtube.mediaplayer.VideoPlayerCacheManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.qualifier.named
@@ -24,6 +30,10 @@ val mediaPlayerModule = module {
             .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
             .setUsage(C.USAGE_MEDIA)
             .build()
+    }
+
+    single<DataSource.Factory> {
+        DefaultHttpDataSource.Factory()
     }
 
     single {
@@ -75,6 +85,15 @@ val mediaPlayerModule = module {
 //            .setSeekForwardIncrementMs(15000)
 //            .setPauseAtEndOfMediaItems(false)
 //            .setVideoScalingMode(C.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING)
+            .apply {
+                val cache = VideoPlayerCacheManager.getCache()
+                if (cache != null) {
+                    val cacheDataSourceFactory = CacheDataSource.Factory()
+                        .setCache(cache)
+                        .setUpstreamDataSourceFactory(DefaultDataSource.Factory(get(), get()))
+                    setMediaSourceFactory(DefaultMediaSourceFactory(cacheDataSourceFactory))
+                }
+            }
             .build()
     }
 

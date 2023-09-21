@@ -24,5 +24,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-service:2.6.1")
+//    implementation("androidx.compose.material:material-icons-extended-android:1.5.1")
     debugImplementation(libs.compose.ui.tooling)
 }

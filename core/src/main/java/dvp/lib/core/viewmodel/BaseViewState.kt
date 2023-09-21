@@ -12,3 +12,10 @@ sealed interface BaseViewState<T> {
     data class Ready<T>(val value: T) : BaseViewState<T>
     data class Error(val throwable: Throwable) : BaseViewState<Nothing>
 }
+
+sealed class ViewState<out T> {
+    data class Data<T>(val data: T) : ViewState<T>()
+    object Empty : ViewState<Nothing>()
+    object Loading : ViewState<Nothing>()
+    data class Error(val throwable: Throwable) : ViewState<Nothing>()
+}

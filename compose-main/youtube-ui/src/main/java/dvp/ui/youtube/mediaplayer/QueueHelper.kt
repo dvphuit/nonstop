@@ -1,17 +1,12 @@
 package dvp.ui.youtube.mediaplayer
 
-import androidx.media3.exoplayer.ExoPlayer
 import dvp.data.youtube.public.UTubeRepo
 import dvp.ui.youtube.mediaplayer.models.MediaData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 internal object QueueHelper {
 
     private val repo: UTubeRepo by inject(UTubeRepo::class.java)
-    private val player: ExoPlayer by inject(ExoPlayer::class.java)
     private var playlist = mutableListOf<MediaData>()
 
     private var index: Int = 0
@@ -48,6 +43,7 @@ internal object QueueHelper {
         return ret
     }
 
+    // todo: fetch continues related videos also
     suspend fun fetchNextStreams(currentIndex: Int): MediaData? {
         if (playlist.isEmpty()) return null
 

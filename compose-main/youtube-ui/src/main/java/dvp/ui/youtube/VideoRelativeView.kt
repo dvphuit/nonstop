@@ -11,7 +11,7 @@ import dvp.ui.youtube.common.LoadingView
 
 
 @Composable
-fun Modifier.VideoRelatedView(video: VideoEntity?) {
+fun VideoRelatedView(modifier: Modifier, video: VideoEntity?) {
     video ?: return
 
     if (video.relatedVideos == null) {
@@ -21,7 +21,7 @@ fun Modifier.VideoRelatedView(video: VideoEntity?) {
 
     if (video.relatedVideos?.isEmpty() == true) {
         Box(
-            modifier = this
+            modifier = modifier
                 .fillMaxSize()
                 .background(Color.Green)
         )
@@ -29,7 +29,7 @@ fun Modifier.VideoRelatedView(video: VideoEntity?) {
     }
 
     Box(
-        modifier = this
+        modifier = modifier
             .fillMaxSize()
             .background(Color.White)
     )

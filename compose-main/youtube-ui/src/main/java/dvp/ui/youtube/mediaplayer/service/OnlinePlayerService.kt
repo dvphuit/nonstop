@@ -17,7 +17,6 @@ import androidx.core.content.IntentCompat
 import androidx.lifecycle.LifecycleService
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
-import dvp.data.youtube.viewmodel.MainViewModel
 import dvp.ui.youtube.mediaplayer.models.MediaData
 import dvp.ui.youtube.mediaplayer.service.notification.Const
 import dvp.ui.youtube.mediaplayer.service.notification.NotificationBuilder
@@ -74,7 +73,7 @@ internal class OnlinePlayerService : LifecycleService() {
         notification = NotificationBuilder(this, Const.PLAYER_NOTIFICATION_ID, Const.NOTIFICATION_CHANNEL_ID, mediaSession.sessionActivity)
             .setNotificationListener(object : NotificationListener {
                 override fun onNotificationCancelled(notificationId: Int, dismissedByUser: Boolean) {
-                    listener?.invoke()
+                    stopByNotificationListener?.invoke()
                 }
             })
 //            .setChannelImportance(NotificationUtil.IMPORTANCE_HIGH)
@@ -147,7 +146,7 @@ internal class OnlinePlayerService : LifecycleService() {
         private var isRunning = false
 //        private var notificationListener: NotificationListener? = null
 
-        private var listener: (() -> Unit)? = null
+        private var stopByNotificationListener: (() -> Unit)? = null
 
 
         fun start(context: Context, initData: MediaData, onStopByNotification: (() -> Unit)? = null) {
@@ -158,7 +157,7 @@ internal class OnlinePlayerService : LifecycleService() {
             }
             context.startForegroundService(intent)
             isRunning = true
-            listener = onStopByNotification
+            stopByNotificationListener = onStopByNotification
         }
 
         fun stop(context: Context) {
