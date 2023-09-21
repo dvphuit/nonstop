@@ -1,8 +1,5 @@
 package dvp.ui.youtube.di
 
-import android.app.PendingIntent
-import android.content.Intent
-import androidx.core.app.PendingIntentCompat
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.util.UnstableApi
@@ -12,14 +9,11 @@ import androidx.media3.datasource.DefaultHttpDataSource
 import androidx.media3.datasource.cache.CacheDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
-import androidx.media3.session.MediaSession
-import dvp.ui.youtube.mediaplayer.MediaViewModel
-import dvp.ui.youtube.mediaplayer.VideoPlayerCacheManager
+import dvp.ui.youtube.viewmodel.MediaViewModel
+import dvp.ui.youtube.helper.VideoPlayerCacheManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import java.lang.ref.WeakReference
 
 
 @UnstableApi

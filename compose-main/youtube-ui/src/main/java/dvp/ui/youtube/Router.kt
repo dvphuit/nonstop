@@ -2,10 +2,10 @@ package dvp.ui.youtube
 
 import android.content.Context
 import androidx.compose.runtime.Composable
-import dvp.ui.youtube.common.AppStateHandler
-import dvp.ui.youtube.mediaplayer.MediaViewModel
-import dvp.ui.youtube.mediaplayer.models.PlayerEvent
-import dvp.ui.youtube.test.TestVideoPlayer
+import dvp.ui.youtube.view.common.AppStateHandler
+import dvp.ui.youtube.viewmodel.MediaViewModel
+import dvp.ui.youtube.viewmodel.models.PlayerEvent
+import dvp.ui.youtube.view.MainPage
 import org.koin.androidx.compose.koinViewModel
 
 @androidx.media3.common.util.UnstableApi

@@ -16,8 +16,8 @@ import dvp.data.youtube.models.AudioFormat
 import dvp.data.youtube.models.StreamingData
 import dvp.data.youtube.models.VideoEntity
 import dvp.data.youtube.models.VideoFormat
-import dvp.ui.youtube.mediaplayer.MediaViewModel
-import dvp.ui.youtube.player.VideoView
+import dvp.ui.youtube.viewmodel.MediaViewModel
+import dvp.ui.youtube.view.player.VideoView
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 

@@ -8,7 +8,7 @@
 
     <application>
         <service
-            android:name=".mediaplayer.service.OnlinePlayerService"
+            android:name=".service.MediaPlayerService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback"
             />
